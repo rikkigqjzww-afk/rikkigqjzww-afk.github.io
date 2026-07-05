@@ -2760,7 +2760,7 @@
 }
 
   </style>
-<script data-preview-injected src="https://lf3-static.bytednsdoc.com/obj/eden-cn/8011eh7nupenuvonuhd/previewer-tools.de3cd6a1.umd.js"></script></head>
+</head>
 <body>
 
   <div class="admin-banner" id="adminBanner">&#9999;&#65039; 编辑模式已开启 — 管理员已登录</div>
@@ -11541,6 +11541,43 @@ document.getElementById('btnSendMsg').addEventListener('click', function() {
   renderMessages();
   showToast('留言发送成功');
 });
+
+// Rich editor paste handler — support WeChat article images
+(function() {
+  document.addEventListener('paste', function(e) {
+    var target = e.target;
+    if (!target.classList || !target.classList.contains('rich-editor-content')) return;
+    var clipboardData = e.clipboardData || window.clipboardData;
+    var html = clipboardData.getData('text/html');
+    if (!html) return;
+    // Check if paste contains WeChat-style lazy-load images (data-src)
+    if (html.indexOf('data-src') !== -1 && html.indexOf('mmbiz.qpic.cn') !== -1) {
+      e.preventDefault();
+      var tempDiv = document.createElement('div');
+      tempDiv.innerHTML = html;
+      // Convert WeChat data-src to real src for display
+      tempDiv.querySelectorAll('img').forEach(function(img) {
+        if (!img.src && img.getAttribute('data-src')) {
+          img.src = img.getAttribute('data-src');
+          img.removeAttribute('data-src');
+        }
+        // Remove WeChat-specific attributes that may break display
+        img.removeAttribute('data-copyright');
+        img.removeAttribute('data-ratio');
+        img.removeAttribute('data-type');
+        img.removeAttribute('data-w');
+        img.removeAttribute('data-fileid');
+        img.style.maxWidth = '100%';
+      });
+      // Remove WeChat-specific wrapper elements
+      tempDiv.querySelectorAll('.rich_media_content').forEach(function(el) {
+        while (el.firstChild) el.parentNode.insertBefore(el.firstChild, el);
+        el.remove();
+      });
+      document.execCommand('insertHTML', false, tempDiv.innerHTML);
+    }
+  });
+})();
 
 // Single admin button binding
 document.getElementById('btnAdmin').addEventListener('click', function() {
