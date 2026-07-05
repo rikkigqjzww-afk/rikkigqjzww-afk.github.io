@@ -242,7 +242,6 @@
       align-items: center;
       gap: 8px;
       min-width: 0;
-      max-width: 480px;
       height: 32px;
       margin-left: auto;
       overflow: hidden;
@@ -420,7 +419,13 @@
       border-radius: 8px;
       font-size: 13px;
       color: rgba(18,18,18,0.65);
+      position: relative;
     }
+    .msg-pinned { background: #fffbe6; border-radius: 6px; padding: 6px 8px !important; }
+    .msg-pin-tag { display: inline-block; }
+    .msg-admin-actions.admin-only { display: none; }
+    body.admin-mode .msg-admin-actions.admin-only { display: inline-flex; }
+    .msg-item .admin-edit-btn { font-size: 11px; padding: 1px 6px; }
     .msg-item .msg-author {
       font-size: 12px;
       color: rgba(18,18,18,0.45);
@@ -3846,7 +3851,6 @@
               <div class="msg-empty">还没有留言，来做第一个留言的人吧</div>
             </div>
             <div class="msg-input-area">
-              <input type="text" class="msg-name-input" id="msgNameInput" placeholder="你的昵称（选填）">
               <textarea id="msgInput" placeholder="说点什么吧..."></textarea>
               <button class="btn-send-msg" id="btnSendMsg">发送留言</button>
             </div>
@@ -4548,17 +4552,53 @@ function toggleLike(btn) {
     }
 function renderMessages() {
       var list = document.getElementById('msgList');
+      if (!list) return;
       if (messages.length === 0) {
         list.innerHTML = '<div class="msg-empty">还没有留言，来做第一个留言的人吧</div>';
         return;
       }
-      list.innerHTML = '';
-      messages.forEach(function(msg) {
-        var item = document.createElement('div');
-        item.className = 'msg-item';
-        item.innerHTML = '<div class="msg-author">' + msg.name + ' &middot; ' + msg.time + '</div>' +
-          '<div>' + msg.text + '</div>';
-        list.appendChild(item);
+      // 排序：置顶的在前
+      var sorted = messages.slice().sort(function(a, b) {
+        if (a.pinned && !b.pinned) return -1;
+        if (!a.pinned && b.pinned) return 1;
+        return 0;
+      });
+      var html = '';
+      sorted.forEach(function(msg) {
+        var realIdx = messages.indexOf(msg);
+        html += '<div class="msg-item' + (msg.pinned ? ' msg-pinned' : '') + '">';
+        if (msg.pinned) html += '<span class="msg-pin-tag" style="font-size:10px;color:#E63946;margin-right:4px;">置顶</span>';
+        html += '<div class="msg-author">' + msg.name + ' &middot; ' + msg.time + '</div>';
+        html += '<div>' + msg.text + '</div>';
+        html += '<span class="msg-admin-actions admin-only" style="margin-left:auto;gap:4px;display:none;">';
+        html += '<button class="admin-edit-btn btn-pin-msg" data-idx="' + realIdx + '" style="font-size:11px;padding:1px 6px;" title="' + (msg.pinned ? '取消置顶' : '置顶') + '">' + (msg.pinned ? '取消置顶' : '置顶') + '</button>';
+        html += '<button class="admin-edit-btn danger btn-del-msg" data-idx="' + realIdx + '" style="font-size:11px;padding:1px 6px;" title="删除">删除</button>';
+        html += '</span></div>';
+      });
+      list.innerHTML = html;
+      bindMsgAdminBtns();
+    }
+
+    function bindMsgAdminBtns() {
+      document.querySelectorAll('.btn-pin-msg').forEach(function(btn) {
+        if (btn._bound) return;
+        btn._bound = true;
+        btn.addEventListener('click', function() {
+          var idx = parseInt(this.dataset.idx);
+          messages[idx].pinned = !messages[idx].pinned;
+          renderMessages();
+          showToast(messages[idx].pinned ? '留言已置顶' : '已取消置顶');
+        });
+      });
+      document.querySelectorAll('.btn-del-msg').forEach(function(btn) {
+        if (btn._bound) return;
+        btn._bound = true;
+        btn.addEventListener('click', function() {
+          var idx = parseInt(this.dataset.idx);
+          messages.splice(idx, 1);
+          renderMessages();
+          showToast('留言已删除');
+        });
       });
     }
 
@@ -5368,7 +5408,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -5444,7 +5484,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -5540,7 +5580,7 @@ function bindBannerEditBtns() {
 
     // ===== Messages =====
     var messages = [];
-    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = document.getElementById('msgNameInput').value.trim() || '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
+    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
     
 
     // ===== Resource Data =====
@@ -5616,7 +5656,7 @@ function bindBannerEditBtns() {
 
     // ===== Messages =====
     var messages = [];
-    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = document.getElementById('msgNameInput').value.trim() || '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
+    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
     
 
     // ===== Render Detail =====
@@ -5734,7 +5774,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -5939,7 +5979,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -6028,7 +6068,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -6104,7 +6144,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -6217,7 +6257,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -6311,7 +6351,7 @@ function bindBannerEditBtns() {
 
     // ===== Messages =====
     var messages = [];
-    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = document.getElementById('msgNameInput').value.trim() || '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
+    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
     
 
     // ===== Resource Data =====
@@ -6385,7 +6425,7 @@ function bindBannerEditBtns() {
 
     // ===== Messages =====
     var messages = [];
-    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = document.getElementById('msgNameInput').value.trim() || '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
+    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
     
 
     // ===== Render Detail =====
@@ -6500,7 +6540,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -6701,7 +6741,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -6785,7 +6825,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -6856,7 +6896,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -6954,7 +6994,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -7024,7 +7064,7 @@ function bindBannerEditBtns() {
 
     // ===== Messages =====
     var messages = [];
-    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = document.getElementById('msgNameInput').value.trim() || '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
+    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
     // ===== Resource Data =====
     var resourceData = [
       { id: 1, title: 'PS 零基础到精通全套教程', img: 'https://picsum.photos/seed/res-ps/800/450', discount: '-75%', currentPrice: 49.9, originalPrice: 199.9, rating: 4.8, sales: 1283, tags: ['PS教程', '视频课程', '设计入门'], tagKeys: ['ps', 'video', 'design-entry'], cat: 'tutorial', status: '热销', desc: '从零基础到精通的Photoshop完整教程，涵盖基础操作、图层技巧、蒙版使用、调色修图等核心技能，适合设计入门者系统学习。', featured: false, type: '普通' },
@@ -7085,7 +7125,7 @@ function bindBannerEditBtns() {
 
     // ===== Messages =====
     var messages = [];
-    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = document.getElementById('msgNameInput').value.trim() || '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
+    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
     // ===== Render Detail =====
     (function() {
       var params = new URLSearchParams(window.location.search);
@@ -7189,7 +7229,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -7369,7 +7409,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -7432,7 +7472,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -7484,7 +7524,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -7580,7 +7620,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -7679,7 +7719,7 @@ function bindBannerEditBtns() {
 
     // ===== Messages =====
     var messages = [];
-    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = document.getElementById('msgNameInput').value.trim() || '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
+    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
     
 
     // ===== Resource Data =====
@@ -7756,7 +7796,7 @@ function bindBannerEditBtns() {
 
     // ===== Messages =====
     var messages = [];
-    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = document.getElementById('msgNameInput').value.trim() || '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
+    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
     
 
     // ===== Render Detail =====
@@ -7886,7 +7926,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -8092,7 +8132,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -8179,7 +8219,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -8263,7 +8303,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -8377,7 +8417,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -8474,7 +8514,7 @@ function bindBannerEditBtns() {
 
     // ===== Messages =====
     var messages = [];
-    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = document.getElementById('msgNameInput').value.trim() || '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
+    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
     
 
     // ===== Resource Data =====
@@ -8550,7 +8590,7 @@ function bindBannerEditBtns() {
 
     // ===== Messages =====
     var messages = [];
-    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = document.getElementById('msgNameInput').value.trim() || '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
+    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
     
 
     // ===== Render Detail =====
@@ -8673,7 +8713,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -8877,7 +8917,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -8963,7 +9003,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -9041,7 +9081,7 @@ function bindBannerEditBtns() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -9510,7 +9550,7 @@ function renderNewsList() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -9819,7 +9859,7 @@ function renderResources() {
 
     // ===== Messages =====
     var messages = [];
-    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = document.getElementById('msgNameInput').value.trim() || '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
+    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
     
 
     // ===== Resource Data =====
@@ -9895,7 +9935,7 @@ function renderResources() {
 
     // ===== Messages =====
     var messages = [];
-    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = document.getElementById('msgNameInput').value.trim() || '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
+    document.getElementById('btnSendMsg').addEventListener('click', function() { var name = '匿名用户'; var text = document.getElementById('msgInput').value.trim(); if (!text) { showToast('请输入留言内容'); return; } messages.push({ name: name, text: text, time: '刚刚' }); renderMessages(); document.getElementById('msgInput').value = ''; showToast('留言发送成功'); });
     
 
     // ===== Render Detail =====
@@ -10466,7 +10506,7 @@ function switchPhoto(idx) {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -10743,7 +10783,7 @@ function showQrModal() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -10829,7 +10869,7 @@ function showQrModal() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -11009,7 +11049,7 @@ function toggleDetailLike() {
     // ============================
     var messages = [];
     document.getElementById('btnSendMsg').addEventListener('click', function() {
-      var name = document.getElementById('msgNameInput').value.trim() || '匿名用户';
+      var name = '匿名用户';
       var text = document.getElementById('msgInput').value.trim();
       if (!text) { showToast('请输入留言内容'); return; }
       messages.push({ name: name, text: text, time: '刚刚' });
@@ -11256,6 +11296,8 @@ function toggleDetailLike() {
       if (savedTags) articleTags = JSON.parse(savedTags);
       var savedFeatcats = localStorage.getItem('aiyoushe_featcats');
       if (savedFeatcats) featuredCategories = JSON.parse(savedFeatcats);
+      var savedMessages = localStorage.getItem('aiyoushe_messages');
+      if (savedMessages) { try { messages = JSON.parse(savedMessages); } catch(e) {} }
     } catch(e) {
       // Ignore parse errors, fall back to defaults
     }
@@ -11840,7 +11882,7 @@ var DATA_KEYS = [
   'aiyoushe_carousel', 'aiyoushe_profile_data', 'aiyoushe_contact_html',
   'aiyoushe_vip_banner_data', 'aiyoushe_pricing_html', 'aiyoushe_benefits_html',
   'aiyoushe_faq_data', 'aiyoushe_story_data', 'aiyoushe_value_data',
-  'aiyoushe_about_contact_data', 'aiyoushe_qr_code'
+  'aiyoushe_about_contact_data', 'aiyoushe_qr_code', 'aiyoushe_messages'
 ];
 
 // ============================
@@ -11913,6 +11955,9 @@ function syncDataToStorage() {
     localStorage.setItem('aiyoushe_cats', JSON.stringify(articleCategories));
     localStorage.setItem('aiyoushe_tags', JSON.stringify(articleTags));
     localStorage.setItem('aiyoushe_featcats', JSON.stringify(featuredCategories));
+
+    // Messages
+    localStorage.setItem('aiyoushe_messages', JSON.stringify(messages));
 
     // Carousel
     saveCarouselToStorage();
