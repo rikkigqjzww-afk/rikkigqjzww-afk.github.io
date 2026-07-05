@@ -3847,12 +3847,12 @@
           <!-- Message Widget -->
           <div class="sidebar-widget" id="messageWidget">
             <div class="sidebar-widget-title">给我留言</div>
-            <div class="msg-list" id="msgList">
-              <div class="msg-empty">还没有留言，来做第一个留言的人吧</div>
-            </div>
             <div class="msg-input-area">
               <textarea id="msgInput" placeholder="说点什么吧..."></textarea>
               <button class="btn-send-msg" id="btnSendMsg">发送留言</button>
+            </div>
+            <div class="msg-list" id="msgList">
+              <div class="msg-empty">还没有留言，来做第一个留言的人吧</div>
             </div>
           </div>
         </aside>
@@ -11521,17 +11521,26 @@ disableEditMode = function() {
 
 // Clone-replace buttons to remove ALL previously attached event listeners
 (function() {
-  var oldBtn = document.getElementById('btnAdmin');
-  if (oldBtn) {
-    var newBtn = oldBtn.cloneNode(true);
-    oldBtn.parentNode.replaceChild(newBtn, oldBtn);
-  }
-  var oldExitBtn = document.getElementById('btnExitEdit');
-  if (oldExitBtn) {
-    var newExitBtn = oldExitBtn.cloneNode(true);
-    oldExitBtn.parentNode.replaceChild(newExitBtn, oldExitBtn);
-  }
+  var ids = ['btnAdmin', 'btnExitEdit', 'btnSendMsg', 'btnBackup', 'btnRestore'];
+  ids.forEach(function(id) {
+    var old = document.getElementById(id);
+    if (old) {
+      var n = old.cloneNode(true);
+      old.parentNode.replaceChild(n, old);
+    }
+  });
 })();
+
+// Single send message button binding
+document.getElementById('btnSendMsg').addEventListener('click', function() {
+  var name = '匿名用户';
+  var text = document.getElementById('msgInput').value.trim();
+  if (!text) { showToast('请输入留言内容'); return; }
+  messages.push({ name: name, text: text, time: '刚刚' });
+  document.getElementById('msgInput').value = '';
+  renderMessages();
+  showToast('留言发送成功');
+});
 
 // Single admin button binding
 document.getElementById('btnAdmin').addEventListener('click', function() {
