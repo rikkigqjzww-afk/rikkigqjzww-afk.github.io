@@ -1282,14 +1282,12 @@
     }
     @media (max-width: 480px) {
       .left-sidebar {
-        width: 0;
-        min-width: 0;
-        overflow: hidden;
-        border-right: none;
+        width: 200px;
+        min-width: 200px;
       }
-      .main-area { margin-left: 0; }
-      .bottom-announce { left: 0; }
       .search-box { max-width: none; }
+      body.admin-mode .top-bar { top: 0; }
+      .admin-bar { display: none; }
     }
   
     /* ===== Unique CSS from news.html ===== */
@@ -2587,12 +2585,179 @@
   .featured-resources-grid { grid-template-columns: 1fr; }
 }
 
+/* --- Mobile: hidden by default on desktop --- */
+.mobile-header { display: none; }
+.mobile-overlay { display: none; }
+
+/* ============================
+   MOBILE ADAPTATION (<=768px)
+   ============================ */
+@media (max-width: 768px) {
+  /* --- Sidebar Drawer --- */
+  .left-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1001;
+    width: 240px;
+    min-width: 240px;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+  }
+  .left-sidebar.sidebar-open {
+    transform: translateX(0);
+  }
+  .sidebar-logo .brand-pill { font-size: 13px; padding: 8px 16px; }
+  .sidebar-menu a span { display: inline; }
+  .sidebar-menu a { justify-content: flex-start; padding: 12px 16px; gap: 10px; }
+  .sidebar-bottom .btn-admin span,
+  .sidebar-bottom .btn-exit-edit span,
+  .sidebar-bottom .btn-backup span,
+  .sidebar-bottom .btn-restore span { display: inline; }
+  
+  /* --- Mobile Overlay --- */
+  .mobile-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 1000;
+  }
+  .mobile-overlay.active { display: block; }
+  
+  /* --- Hamburger Button --- */
+  .mobile-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hamburger-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid #d9d9d9;
+    background: #fff;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .hamburger-btn svg { width: 18px; height: 18px; }
+  
+  /* --- Main Area --- */
+  .main-area { margin-left: 0 !important; }
+  .bottom-announce { left: 0 !important; }
+  body.admin-mode .top-bar { top: 0 !important; }
+  .admin-bar { display: none !important; }
+  
+  /* --- Top Bar --- */
+  .top-bar-inner { padding: 8px 12px; gap: 8px; }
+  .search-box { max-width: none; flex: 1; }
+  .search-box input { height: 34px; font-size: 13px; }
+  .announce-bar { display: none; }
+  
+  /* --- Content Area --- */
+  .center-content { padding: 12px; }
+  .content-wrapper { flex-direction: column; }
+  .right-sidebar { display: none; }
+  
+  /* --- Banner/Carousel --- */
+  .carousel-slide .slide-overlay h2 { font-size: 16px; }
+  .carousel-slide .slide-overlay p { font-size: 12px; }
+  .carousel-dot { width: 6px; height: 6px; }
+  .gallery-arrow { width: 28px; height: 28px; }
+  .gallery-arrow svg { width: 12px; height: 12px; }
+  
+  /* --- Section Headers --- */
+  .section-header h2 { font-size: 18px; }
+  .album-title-bar h2 { font-size: 18px; }
+  
+  /* --- Article Grid --- */
+  .article-grid { grid-template-columns: 1fr !important; gap: 12px; }
+  
+  /* --- News List --- */
+  .news-list { grid-template-columns: 1fr !important; gap: 12px; }
+  
+  /* --- Resource Grid --- */
+  .resource-grid { grid-template-columns: 1fr !important; gap: 12px; }
+  
+  /* --- Featured Resources --- */
+  .featured-resources-grid { grid-template-columns: 1fr !important; gap: 12px; }
+  
+  /* --- Search Results --- */
+  #searchResults .search-group-grid { grid-template-columns: 1fr !important; }
+  
+  /* --- Album Cards --- */
+  .album-category-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
+  .sub-album-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
+  
+  /* --- Pricing Cards --- */
+  .pricing-grid { grid-template-columns: 1fr !important; gap: 16px; }
+  .pricing-card { padding: 24px 16px; }
+  
+  /* --- Tag Cloud --- */
+  .tag-cloud-wrap { flex-wrap: wrap; }
+  
+  /* --- Modal/Dialog --- */
+  .modal-card { width: 96% !important; max-width: 96% !important; padding: 16px !important; max-height: 90vh !important; border-radius: 12px; }
+  .modal-card.fullscreen { padding: 0 !important; height: 100vh !important; }
+  .modal-card.fullscreen .modal-body { padding: 12px 16px !important; }
+  .modal-card .form-item label { font-size: 13px; }
+  .modal-card .form-item input,
+  .modal-card .form-item textarea,
+  .modal-card .form-item select { font-size: 14px; }
+  .btn-modal-fs { top: 12px; right: 12px; }
+  
+  /* --- Rich Editor --- */
+  .rich-editor-content { padding: 10px; font-size: 14px; min-height: 150px; }
+  .rich-toolbar { flex-wrap: wrap; padding: 6px; }
+  .rich-toolbar button { width: 30px; height: 30px; font-size: 12px; }
+  
+  /* --- Filter Pills --- */
+  .filter-bar { flex-wrap: wrap; }
+  .pill-group .pill { font-size: 11px; padding: 3px 10px; }
+  
+  /* --- About Page --- */
+  .about-grid { grid-template-columns: 1fr !important; }
+  .contact-widget-grid { grid-template-columns: 1fr !important; }
+  
+  /* --- Footer --- */
+  .site-footer { font-size: 11px; padding: 12px 16px; }
+  
+  /* --- News Detail --- */
+  .news-detail-content { padding: 12px !important; }
+  .news-detail-content .rich-editor-content { padding: 8px !important; font-size: 15px; line-height: 1.8; }
+  
+  /* --- Resource Detail --- */
+  .resource-detail-layout { flex-direction: column !important; }
+  .resource-detail-main { width: 100% !important; }
+  .resource-detail-sidebar { width: 100% !important; }
+  
+  /* --- QQ Gallery --- */
+  .qq-gallery-main img { max-height: 300px; }
+  
+  /* --- Buttons --- */
+  .btn-view-all { font-size: 12px; }
+  .album-filter-select { min-width: 110px; font-size: 12px; }
+}
+
+@media (max-width: 480px) {
+  .album-category-grid { grid-template-columns: 1fr !important; }
+  .sub-album-grid { grid-template-columns: 1fr !important; }
+  .carousel-slide .slide-overlay h2 { font-size: 14px; }
+}
+
   </style>
 <script data-preview-injected src="https://lf3-static.bytednsdoc.com/obj/eden-cn/8011eh7nupenuvonuhd/previewer-tools.de3cd6a1.umd.js"></script></head>
 <body>
 
   <div class="admin-banner" id="adminBanner">&#9999;&#65039; 编辑模式已开启 — 管理员已登录</div>
   <div class="toast-container" id="toastContainer"></div>
+
+  <div class="mobile-overlay" id="mobileOverlay"></div>
 
   <div class="layout-wrapper">
     <aside class="left-sidebar">
@@ -2648,6 +2813,11 @@
     <div class="main-area">
       <header class="top-bar">
         <div class="top-bar-inner">
+          <div class="mobile-header">
+            <button class="hamburger-btn" id="hamburgerBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+          </div>
           <div class="search-box">
             <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             <input type="text" placeholder="搜索资源、资讯..." id="searchInput">
@@ -11068,6 +11238,33 @@ function toggleDetailLike() {
     bindAnnounceEditBtn();
     renderFeaturedResources();
 
+    // Mobile sidebar toggle
+    var hamburgerBtn = document.getElementById('hamburgerBtn');
+    var mobileOverlay = document.getElementById('mobileOverlay');
+    var sidebar = document.querySelector('.left-sidebar');
+
+    if (hamburgerBtn) {
+      hamburgerBtn.addEventListener('click', function() {
+        sidebar.classList.toggle('sidebar-open');
+        mobileOverlay.classList.toggle('active');
+      });
+    }
+    if (mobileOverlay) {
+      mobileOverlay.addEventListener('click', function() {
+        sidebar.classList.remove('sidebar-open');
+        mobileOverlay.classList.remove('active');
+      });
+    }
+    // Close sidebar on nav click (mobile)
+    document.querySelectorAll('.sidebar-menu a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        if (window.innerWidth <= 768) {
+          sidebar.classList.remove('sidebar-open');
+          mobileOverlay.classList.remove('active');
+        }
+      });
+    });
+
     // ============================
     // ADMIN FUNCTIONS
     // ============================
@@ -11428,13 +11625,31 @@ var DATA_KEYS = [
   'aiyoushe_featcats', 'aiyoushe_banners', 'aiyoushe_about', 'aiyoushe_contact'
 ];
 
+function syncDataToStorage() {
+  try {
+    localStorage.setItem('aiyoushe_articles', JSON.stringify(articles));
+    localStorage.setItem('aiyoushe_resources', JSON.stringify(resourceData));
+    localStorage.setItem('aiyoushe_albums', JSON.stringify(albumData));
+    localStorage.setItem('aiyoushe_announcements', JSON.stringify(announcements));
+    localStorage.setItem('aiyoushe_cats', JSON.stringify(articleCategories));
+    localStorage.setItem('aiyoushe_tags', JSON.stringify(articleTags));
+    localStorage.setItem('aiyoushe_featcats', JSON.stringify(featuredCategories));
+  } catch(e) {
+    // localStorage full or unavailable, silently ignore
+  }
+}
+
 function exportAllData() {
+  syncDataToStorage();
   var data = {};
   DATA_KEYS.forEach(function(key) {
     var val = localStorage.getItem(key);
     if (val !== null) data[key] = val;
   });
-  var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  // Also include html file backup flag
+  data._backup_note = 'This backup contains all editable data. To fully restore your site, you also need the index.html file.';
+  var jsonStr = JSON.stringify(data, null, 2);
+  var blob = new Blob([jsonStr], { type: 'application/json' });
   var url = URL.createObjectURL(blob);
   var a = document.createElement('a');
   a.href = url;
@@ -11443,7 +11658,7 @@ function exportAllData() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  showToast('数据备份已下载');
+  showToast('数据备份已下载（' + Object.keys(data).length + ' 项）');
 }
 
 function importAllData(jsonString) {
@@ -11456,7 +11671,17 @@ function importAllData(jsonString) {
         count++;
       }
     });
-    showToast('已恢复 ' + count + ' 项数据，刷新页面后生效');
+    if (count > 0) {
+      // Reload data from localStorage into memory variables
+      articles = JSON.parse(localStorage.getItem('aiyoushe_articles')) || articles;
+      resourceData = JSON.parse(localStorage.getItem('aiyoushe_resources')) || resourceData;
+      albumData = JSON.parse(localStorage.getItem('aiyoushe_albums')) || albumData;
+      announcements = JSON.parse(localStorage.getItem('aiyoushe_announcements')) || announcements;
+      articleCategories = JSON.parse(localStorage.getItem('aiyoushe_cats')) || articleCategories;
+      articleTags = JSON.parse(localStorage.getItem('aiyoushe_tags')) || articleTags;
+      featuredCategories = JSON.parse(localStorage.getItem('aiyoushe_featcats')) || featuredCategories;
+    }
+    showToast('已恢复 ' + count + ' 项数据，正在刷新页面...');
     return true;
   } catch (e) {
     showToast('恢复失败：文件格式错误');
