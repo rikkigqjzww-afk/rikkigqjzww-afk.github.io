@@ -3612,7 +3612,7 @@
                   <li>社区交流权限</li>
                 </ul>
                 <div class="pricing-actions">
-                  <button class="pricing-btn-primary disabled">当前方案</button>
+                  <button class="pricing-btn-primary active btn-choose-plan">立即开通</button>
                   <button class="pricing-btn-secondary admin-edit-btn btn-edit-plan">编辑</button>
                 </div>
               </div>
@@ -4170,6 +4170,11 @@ function showModal(title, bodyHtml, onOk, opts) {
       requestAnimationFrame(function(){ overlay.classList.add('show'); });
 
       var card = overlay.querySelector('.modal-card');
+
+      // Click overlay to close
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) { closeModal(overlay); }
+      });
 
       // Fullscreen toggle button
       if (opts.allowFullscreen || opts.wide) {
@@ -10838,11 +10843,21 @@ function showQrModal() {
             '</div>' +
           '</div>' +
           '<div class="qr-modal-desc">扫描上方二维码添加客服，咨询购买事宜</div>' +
-          '<button class="qr-modal-close" onclick="this.closest(\'.modal-overlay\').classList.remove(\'show\');setTimeout(function(){document.querySelector(\'.modal-overlay\')&&document.querySelector(\'.modal-overlay\').remove()},200)">关闭</button>' +
+          '<button class="qr-modal-close" id="btnCloseQrModal">关闭</button>' +
         '</div>' +
       '</div>';
       document.body.appendChild(overlay);
       requestAnimationFrame(function(){ overlay.classList.add('show'); });
+
+      // Click overlay to close
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) { closeModal(overlay); }
+      });
+
+      // Close button
+      document.getElementById('btnCloseQrModal').addEventListener('click', function() {
+        closeModal(overlay);
+      });
 
       // Load saved QR code from localStorage
       var savedQr = localStorage.getItem('aiyoushe_qr_code');
@@ -10863,14 +10878,20 @@ function showQrModal() {
               var input = document.createElement('input');
               input.type = 'file';
               input.accept = 'image/*';
+              input.style.display = 'none';
+              document.body.appendChild(input);
               input.addEventListener('change', function() {
                 if (this.files && this.files[0]) {
                   fileToBase64(this.files[0], function(base64) {
-                    document.getElementById('qrCodeArea').innerHTML = '<img src="' + base64 + '" alt="客服二维码">';
+                    var area = overlay.querySelector('#qrCodeArea');
+                    if (area) {
+                      area.innerHTML = '<img src="' + base64 + '" alt="客服二维码">';
+                    }
                     localStorage.setItem('aiyoushe_qr_code', base64);
                     showToast('二维码已更新');
                   });
                 }
+                document.body.removeChild(input);
               });
               input.click();
             });
