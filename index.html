@@ -1696,12 +1696,13 @@
       border: none;
       font-size: 14px;
       cursor: pointer;
-      display: inline-flex;
+      display: none;
       align-items: center;
       gap: 6px;
       transition: all 0.2s;
     }
     .btn-add-category:hover { background: rgba(18,18,18,1); }
+    body.admin-mode .btn-add-category { display: inline-flex; }
     /* 子相册卡片网格 */
     .sub-album-grid {
       display: grid;
@@ -2671,7 +2672,37 @@
   /* --- Content Area --- */
   .center-content { padding: 12px; }
   .content-wrapper { flex-direction: column; }
-  .right-sidebar { display: none; }
+  .right-sidebar {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 0 12px 12px !important;
+    position: static !important;
+    max-height: none !important;
+    height: auto !important;
+    order: 1;
+  }
+  .right-sidebar .sidebar-widget { margin-bottom: 16px; }
+  .right-sidebar .sidebar-widget:last-child { margin-bottom: 0; }
+  .profile-widget-avatar { width: 60px; height: 60px; }
+  .profile-widget-name { font-size: 16px; }
+  .msg-list { max-height: 300px; }
+  
+  /* --- Hamburger Button --- */
+  .hamburger-btn {
+    display: flex !important;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid #d9d9d9;
+    background: #fff;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .hamburger-btn svg { width: 18px; height: 18px; }
+  .mobile-header { display: flex !important; align-items: center; }
   
   /* --- Banner/Carousel --- */
   .carousel-slide .slide-overlay h2 { font-size: 16px; }
@@ -2759,8 +2790,57 @@
   .carousel-slide .slide-overlay h2 { font-size: 14px; }
 }
 
+/* ===== Mobile Bottom Tab Bar ===== */
+.mobile-bottom-nav { display: none; }
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background: #fff;
+    border-top: 1px solid #f0f0f0;
+    padding: 6px 0 env(safe-area-inset-bottom, 6px);
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
+  }
+  .mobile-bottom-nav a {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 4px 0;
+    text-decoration: none;
+    color: rgba(18,18,18,0.4);
+    font-size: 10px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .mobile-bottom-nav a svg {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+  .mobile-bottom-nav a.active {
+    color: #E63946;
+  }
+  .mobile-bottom-nav a:hover {
+    color: rgba(18,18,18,0.65);
+  }
+  .mobile-bottom-nav a.active:hover {
+    color: #E63946;
+  }
+  body.admin-mode .mobile-bottom-nav .nav-admin-item { display: flex; }
+  body:not(.admin-mode) .mobile-bottom-nav .nav-admin-item { display: none; }
+  .main-area { padding-bottom: 70px !important; }
+  .bottom-announce { bottom: 58px !important; }
+}
+
   </style>
-</head>
+<script data-preview-injected src="https://lf3-static.bytednsdoc.com/obj/eden-cn/8011eh7nupenuvonuhd/previewer-tools.de3cd6a1.umd.js"></script></head>
 <body>
 
   <div class="admin-banner" id="adminBanner">&#9999;&#65039; 编辑模式已开启 — 管理员已登录</div>
@@ -4032,6 +4112,10 @@
       document.querySelectorAll('.sidebar-menu a').forEach(function(a) { a.classList.remove('active'); });
       var al = document.querySelector('.sidebar-menu a[href="' + pageName + '.html"]');
       if (al) al.classList.add('active');
+      // Sync mobile bottom nav active state
+      document.querySelectorAll('#mobileBottomNav a[data-page]').forEach(function(a) { a.classList.remove('active'); });
+      var mbActive = document.querySelector('#mobileBottomNav a[data-page="' + pageName + '"]');
+      if (mbActive) mbActive.classList.add('active');
       window.scrollTo(0, 0);
       var titles = {
         'index': '\u827e\u4f18\u793e\u8d44\u6e90\u9986 - \u865a\u62df\u8d44\u6599\u5206\u4eab\u5e73\u53f0', 'news': '\u4e1a\u5185\u8d44\u8baf - \u827e\u4f18\u793e\u8d44\u6e90\u9986',
@@ -9262,7 +9346,7 @@ function renderNewsList() {
             });
             var formHtml =
               '<div class="form-item"><label>标题 <span style="color:#ef4343">*</span></label><input type="text" id="editNewsTitle" value="' + a.title.replace(/"/g, '&quot;') + '"></div>' +
-              '<div class="form-item"><label>封面图</label><div class="cover-preview-row"><img id="editNewsCoverPreview" src="' + coverPreview + '" alt=""><label class="btn-upload"><input type="file" id="editNewsImg" accept="image/jpeg,image/png" style="display:none;">更换封面</label></div><div style="font-size:12px;color:rgba(18,18,18,0.45);margin-top:4px;">支持JPG/PNG，不超过2MB</div></div>' +
+              '<div class="form-item"><label>封面图</label><div class="cover-preview-row"><img id="editNewsCoverPreview" src="' + coverPreview + '" alt=""><label class="btn-upload"><input type="file" id="editNewsImg" accept="image/jpeg,image/png" style="display:none;">更换封面</label></div><div style="font-size:12px;color:rgba(18,18,18,0.45);margin-top:4px;">支持JPG/PNG，不超过2MB</div><button type="button" class="admin-edit-btn" id="btnExtractCover" style="margin-top:6px;border-color:#1890ff;color:#1890ff;" title="从正文第一张图片提取封面">从正文提取封面</button></div>' +
               '<div class="form-item"><label>摘要</label><textarea id="editNewsDesc" rows="3">' + a.desc + '</textarea></div>' +
               '<div class="form-item"><label>正文内容</label><div class="rich-editor"><div class="rich-toolbar">' +
                 '<button type="button" data-cmd="formatBlock" data-val="H2">H2</button>' +
@@ -11579,6 +11663,51 @@ document.getElementById('btnSendMsg').addEventListener('click', function() {
   });
 })();
 
+// Mobile bottom nav — sync active state & admin button
+(function() {
+  var nav = document.getElementById('mobileBottomNav');
+  if (!nav) return;
+  var links = nav.querySelectorAll('a[data-page]');
+  links.forEach(function(link) {
+    link.addEventListener('click', function() {
+      links.forEach(function(l) { l.classList.remove('active'); });
+      this.classList.add('active');
+    });
+  });
+  var adminBtn = document.getElementById('mobileNavAdmin');
+  if (adminBtn) {
+    adminBtn.addEventListener('click', function() {
+      var sideBtn = document.getElementById('btnAdmin');
+      if (sideBtn) sideBtn.click();
+    });
+  }
+})();
+
+// Extract cover image from article content
+function extractCoverFromContent(contentEditorId, previewImgId) {
+  var editor = document.getElementById(contentEditorId);
+  var preview = document.getElementById(previewImgId);
+  if (!editor || !preview) { showToast('未找到正文编辑器'); return false; }
+  var imgs = editor.querySelectorAll('img');
+  if (imgs.length === 0) { showToast('正文中没有图片'); return false; }
+  var firstImg = imgs[0];
+  var src = firstImg.getAttribute('src') || firstImg.getAttribute('data-src');
+  if (!src) { showToast('图片无有效地址'); return false; }
+  preview.src = src;
+  preview.style.display = 'inline-block';
+  showToast('已从正文提取封面');
+  return true;
+}
+
+// Event delegation for extract cover buttons
+document.addEventListener('click', function(e) {
+  if (e.target.id === 'btnExtractCover') {
+    extractCoverFromContent('editNewsContent', 'editNewsCoverPreview');
+  } else if (e.target.id === 'btnExtractCoverAdd') {
+    extractCoverFromContent('addNewsContent', 'addNewsCoverPreview');
+  }
+});
+
 // Single admin button binding
 document.getElementById('btnAdmin').addEventListener('click', function() {
   if (document.body.classList.contains('admin-mode')) return;
@@ -11660,7 +11789,7 @@ function bindAddNewsBtn() {
     var today = new Date().toISOString().split('T')[0];
     var formHtml =
       '<div class="form-item"><label>标题 <span style="color:#ef4343">*</span></label><input type="text" id="addNewsTitle" placeholder="请输入文章标题"></div>' +
-      '<div class="form-item"><label>封面图</label><div class="cover-preview-row"><img id="addNewsCoverPreview" src="" alt="" style="display:none;"><label class="btn-upload"><input type="file" id="addNewsImg" accept="image/jpeg,image/png" style="display:none;">上传封面</label></div><div style="font-size:12px;color:rgba(18,18,18,0.45);margin-top:4px;">支持JPG/PNG，不超过2MB</div></div>' +
+      '<div class="form-item"><label>封面图</label><div class="cover-preview-row"><img id="addNewsCoverPreview" src="" alt="" style="display:none;"><label class="btn-upload"><input type="file" id="addNewsImg" accept="image/jpeg,image/png" style="display:none;">上传封面</label></div><div style="font-size:12px;color:rgba(18,18,18,0.45);margin-top:4px;">支持JPG/PNG，不超过2MB</div><button type="button" class="admin-edit-btn" id="btnExtractCoverAdd" style="margin-top:6px;border-color:#1890ff;color:#1890ff;" title="从正文第一张图片提取封面">从正文提取封面</button></div>' +
       '<div class="form-item"><label>摘要</label><textarea id="addNewsDesc" rows="3" placeholder="请输入文章摘要"></textarea></div>' +
       '<div class="form-item"><label>正文内容</label><div class="rich-editor"><div class="rich-toolbar">' +
         '<button type="button" data-cmd="formatBlock" data-val="H2">H2</button>' +
@@ -12769,5 +12898,32 @@ function loadResourceDetail(id) {
     }
 
   </script>
+<!-- Mobile Bottom Tab Bar -->
+<nav class="mobile-bottom-nav" id="mobileBottomNav">
+  <a href="javascript:void(0)" class="active" data-page="index" onclick="switchPage('index')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+    <span>主页</span>
+  </a>
+  <a href="javascript:void(0)" data-page="news" onclick="switchPage('news')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+    <span>资讯</span>
+  </a>
+  <a href="javascript:void(0)" data-page="resources" onclick="switchPage('resources')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+    <span>资源</span>
+  </a>
+  <a href="javascript:void(0)" data-page="album" onclick="switchPage('album')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+    <span>相册</span>
+  </a>
+  <a href="javascript:void(0)" data-page="about" onclick="switchPage('about')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+    <span>关于</span>
+  </a>
+  <a class="nav-admin-item" id="mobileNavAdmin" href="javascript:void(0)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"></path></svg>
+    <span>管理</span>
+  </a>
+</nav>
 </body>
 </html>
