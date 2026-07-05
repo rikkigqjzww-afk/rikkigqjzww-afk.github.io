@@ -4059,6 +4059,8 @@
     // SHARED UTILITY FUNCTIONS
     // ============================
 function showToast(msg) {
+      // Auto-sync all editable data to localStorage on every save action
+      if (typeof syncDataToStorage === 'function') syncDataToStorage();
       var c = document.getElementById('toastContainer');
       var t = document.createElement('div');
       t.className = 'toast-item';
@@ -11230,6 +11232,28 @@ function toggleDetailLike() {
     }
 
     var currentArticleId = parseInt(new URLSearchParams(window.location.search).get('id')) || 1;
+    // ============================
+    // LOAD SAVED DATA FROM LOCALSTORAGE
+    // ============================
+    try {
+      var savedArticles = localStorage.getItem('aiyoushe_articles');
+      if (savedArticles) articles = JSON.parse(savedArticles);
+      var savedResources = localStorage.getItem('aiyoushe_resources');
+      if (savedResources) resourceData = JSON.parse(savedResources);
+      var savedAlbums = localStorage.getItem('aiyoushe_albums');
+      if (savedAlbums) albumData = JSON.parse(savedAlbums);
+      var savedAnnouncements = localStorage.getItem('aiyoushe_announcements');
+      if (savedAnnouncements) announcements = JSON.parse(savedAnnouncements);
+      var savedCats = localStorage.getItem('aiyoushe_cats');
+      if (savedCats) articleCategories = JSON.parse(savedCats);
+      var savedTags = localStorage.getItem('aiyoushe_tags');
+      if (savedTags) articleTags = JSON.parse(savedTags);
+      var savedFeatcats = localStorage.getItem('aiyoushe_featcats');
+      if (savedFeatcats) featuredCategories = JSON.parse(savedFeatcats);
+    } catch(e) {
+      // Ignore parse errors, fall back to defaults
+    }
+
     renderArticle(currentArticleId);
     renderNewsList();
     renderArticleGrid();
@@ -11273,9 +11297,6 @@ function toggleDetailLike() {
     // CLEAN UP DUPLICATE ADMIN BINDINGS
     // ============================
 
-// Check if admin session exists on page load
-try { if (sessionStorage.getItem('aiyoushe_admin') === 'true') { enableEditMode(); bindNewsEditBtns(); bindAddNewsBtn(); bindArticleEditBtns(); bindArticleDetailEditBtns(); } } catch(e) {}
-
 // Force reset enableEditMode and disableEditMode to their original clean implementations
 // (undo any duplicate wrappers from earlier sections that wrapped these functions)
 enableEditMode = function() {
@@ -11315,7 +11336,8 @@ document.getElementById('btnAdmin').addEventListener('click', function() {
         overlay.querySelector('#adminPwdError').textContent = '密码错误，请重试';
         return false;
       }
-      sessionStorage.setItem('aiyoushe_admin', 'true');
+      localStorage.setItem('aiyoushe_admin', 'true');
+      localStorage.setItem('aiyoushe_admin_time', Date.now().toString());
       showToast('登录成功，编辑模式已开启');
       enableEditMode();
       bindContactEditBtns();
@@ -11331,6 +11353,29 @@ document.getElementById('btnAdmin').addEventListener('click', function() {
     }
   );
 });
+
+// Check if admin session exists on page load (valid for 24 hours)
+(function() {
+  try {
+    var adminLoginTime = parseInt(localStorage.getItem('aiyoushe_admin_time'));
+    if (localStorage.getItem('aiyoushe_admin') === 'true' && adminLoginTime && (Date.now() - adminLoginTime < 24 * 60 * 60 * 1000)) {
+      enableEditMode();
+      bindContactEditBtns();
+      bindProfileEditBtns();
+      bindNewsEditBtns();
+      bindArticleEditBtns();
+      bindBannerEditBtns();
+      bindDynamicEditBtns();
+      bindVipEditBtns();
+      bindAboutEditBtns();
+      bindAddNewsBtn();
+      bindArticleDetailEditBtns();
+    } else if (localStorage.getItem('aiyoushe_admin') === 'true') {
+      localStorage.removeItem('aiyoushe_admin');
+      localStorage.removeItem('aiyoushe_admin_time');
+    }
+  } catch(e) {}
+})();
 
 function bindAddNewsBtn() {
   var btn = document.getElementById('btnAddNews');
@@ -11611,7 +11656,8 @@ function bindArticleDetailEditBtns() {
 
 // Single exit button binding
 document.getElementById('btnExitEdit').addEventListener('click', function() {
-  sessionStorage.removeItem('aiyoushe_admin');
+  localStorage.removeItem('aiyoushe_admin');
+  localStorage.removeItem('aiyoushe_admin_time');
   disableEditMode();
   showToast('已退出编辑模式');
 });
