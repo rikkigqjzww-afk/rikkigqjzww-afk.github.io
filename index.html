@@ -11681,7 +11681,26 @@ document.getElementById('btnSendMsg').addEventListener('click', function() {
       if (sideBtn) sideBtn.click();
     });
   }
+  // "More" popup toggle
+  var moreBtn = document.getElementById('mobileNavMore');
+  var popup = document.getElementById('mobileMorePopup');
+  if (moreBtn && popup) {
+    moreBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
+    });
+    document.addEventListener('click', function(e) {
+      if (!popup.contains(e.target)) {
+        popup.style.display = 'none';
+      }
+    });
+  }
 })();
+
+function closeMobilePopup() {
+  var popup = document.getElementById('mobileMorePopup');
+  if (popup) popup.style.display = 'none';
+}
 
 // Extract cover image from article content
 function extractCoverFromContent(contentEditorId, previewImgId) {
