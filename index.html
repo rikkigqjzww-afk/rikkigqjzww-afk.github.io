@@ -4845,6 +4845,7 @@ function bindBannerEditBtns() {
               if (fileInput.files && fileInput.files[0]) {
                 fileToBase64WithCrop(fileInput.files[0], function(base64) {
                   slide.querySelector('img').src = base64;
+                  saveCarouselToStorage();
                 });
               }
               showToast('轮播图已更新');
@@ -4941,6 +4942,7 @@ function bindBannerEditBtns() {
                       if (fileInput.files && fileInput.files[0]) {
                         fileToBase64WithCrop(fileInput.files[0], function(base64) {
                           slide.querySelector('img').src = base64;
+                          saveCarouselToStorage();
                         });
                       }
                       showToast('轮播图已更新');
@@ -11254,6 +11256,168 @@ function toggleDetailLike() {
       // Ignore parse errors, fall back to defaults
     }
 
+    // ===== Restore DOM-based editable content =====
+
+    // Restore carousel
+    loadCarouselFromStorage();
+
+    // Restore profile widget
+    try {
+      var savedProfileData = localStorage.getItem('aiyoushe_profile_data');
+      if (savedProfileData) {
+        var profileData = JSON.parse(savedProfileData);
+        if (profileData.avatar && document.getElementById('profileAvatar')) {
+          document.getElementById('profileAvatar').src = profileData.avatar;
+        }
+        if (profileData.name && document.getElementById('profileName')) {
+          document.getElementById('profileName').textContent = profileData.name;
+        }
+        if (profileData.desc && document.getElementById('profileDesc')) {
+          document.getElementById('profileDesc').textContent = profileData.desc;
+        }
+        if (profileData.align && document.getElementById('profileDesc')) {
+          document.getElementById('profileDesc').style.textAlign = profileData.align;
+        }
+      }
+    } catch(e) {}
+
+    // Restore contact widget list
+    try {
+      var savedContactHtml = localStorage.getItem('aiyoushe_contact_html');
+      if (savedContactHtml) {
+        var contactListEl = document.getElementById('contactList');
+        if (contactListEl) {
+          contactListEl.innerHTML = savedContactHtml;
+        }
+      }
+    } catch(e) {}
+
+    // Restore VIP Banner
+    try {
+      var savedVipBanner = localStorage.getItem('aiyoushe_vip_banner_data');
+      if (savedVipBanner) {
+        var vipBannerData = JSON.parse(savedVipBanner);
+        if (vipBannerData.title && document.getElementById('vipBannerTitle')) {
+          document.getElementById('vipBannerTitle').textContent = vipBannerData.title;
+        }
+        if (vipBannerData.desc && document.getElementById('vipBannerDesc')) {
+          document.getElementById('vipBannerDesc').textContent = vipBannerData.desc;
+        }
+      }
+    } catch(e) {}
+
+    // Restore pricing grid
+    try {
+      var savedPricingHtml = localStorage.getItem('aiyoushe_pricing_html');
+      if (savedPricingHtml) {
+        var pricingGridEl = document.querySelector('.pricing-grid');
+        if (pricingGridEl) {
+          pricingGridEl.innerHTML = savedPricingHtml;
+        }
+      }
+    } catch(e) {}
+
+    // Restore benefits list
+    try {
+      var savedBenefitsHtml = localStorage.getItem('aiyoushe_benefits_html');
+      if (savedBenefitsHtml) {
+        var benefitsListEl = document.querySelector('.benefits-list');
+        if (benefitsListEl) {
+          benefitsListEl.innerHTML = savedBenefitsHtml;
+        }
+      }
+    } catch(e) {}
+
+    // Restore FAQ data
+    try {
+      var savedFaqData = localStorage.getItem('aiyoushe_faq_data');
+      if (savedFaqData) {
+        var faqData = JSON.parse(savedFaqData);
+        var faqItems = document.querySelectorAll('.faq-section .faq-item');
+        if (faqData.length && faqItems.length) {
+          var count = Math.min(faqData.length, faqItems.length);
+          for (var fi = 0; fi < count; fi++) {
+            var qEl = faqItems[fi].querySelector('.faq-question');
+            var aEl = faqItems[fi].querySelector('.faq-answer');
+            if (qEl) qEl.textContent = faqData[fi].question;
+            if (aEl) aEl.textContent = faqData[fi].answer;
+          }
+        }
+      }
+    } catch(e) {}
+
+    // Restore about page - story cards
+    try {
+      var savedStoryData = localStorage.getItem('aiyoushe_story_data');
+      if (savedStoryData) {
+        var storyDataArr = JSON.parse(savedStoryData);
+        var storyCards = document.querySelectorAll('#page-about .story-card');
+        if (storyDataArr.length && storyCards.length) {
+          var sCount = Math.min(storyDataArr.length, storyCards.length);
+          for (var si = 0; si < sCount; si++) {
+            var h3El = storyCards[si].querySelector('h3');
+            if (h3El) h3El.textContent = storyDataArr[si].title;
+            var pEls = storyCards[si].querySelectorAll('p');
+            for (var pi = 0; pi < pEls.length; pi++) {
+              if (storyDataArr[si].paragraphs[pi]) {
+                pEls[pi].textContent = storyDataArr[si].paragraphs[pi];
+              }
+            }
+          }
+        }
+      }
+    } catch(e) {}
+
+    // Restore about page - value cards (philosophy)
+    try {
+      var savedValueData = localStorage.getItem('aiyoushe_value_data');
+      if (savedValueData) {
+        var valueDataArr = JSON.parse(savedValueData);
+        var valueCards = document.querySelectorAll('#page-about .value-card');
+        if (valueDataArr.length && valueCards.length) {
+          var vCount = Math.min(valueDataArr.length, valueCards.length);
+          for (var vi = 0; vi < vCount; vi++) {
+            var vTitle = valueCards[vi].querySelector('.value-title');
+            var vDesc = valueCards[vi].querySelector('.value-desc');
+            var vIcon = valueCards[vi].querySelector('.value-icon');
+            if (vTitle) vTitle.textContent = valueDataArr[vi].title;
+            if (vDesc) vDesc.textContent = valueDataArr[vi].desc;
+            if (vIcon) {
+              vIcon.innerHTML = valueDataArr[vi].iconHtml;
+              if (valueDataArr[vi].customIcon) {
+                vIcon.setAttribute('data-custom-icon', 'true');
+              }
+            }
+          }
+        }
+      }
+    } catch(e) {}
+
+    // Restore about page - contact items
+    try {
+      var savedAboutContact = localStorage.getItem('aiyoushe_about_contact_data');
+      if (savedAboutContact) {
+        var aboutContactArr = JSON.parse(savedAboutContact);
+        var aboutContactItems = document.querySelectorAll('#page-about .contact-item');
+        if (aboutContactArr.length && aboutContactItems.length) {
+          var acCount = Math.min(aboutContactArr.length, aboutContactItems.length);
+          for (var aci = 0; aci < acCount; aci++) {
+            var acLabel = aboutContactItems[aci].querySelector('.contact-item-label');
+            var acValue = aboutContactItems[aci].querySelector('.contact-item-value');
+            var acIcon = aboutContactItems[aci].querySelector('.contact-item-icon');
+            if (acLabel) acLabel.textContent = aboutContactArr[aci].label;
+            if (acValue) acValue.textContent = aboutContactArr[aci].value;
+            if (acIcon) {
+              acIcon.innerHTML = aboutContactArr[aci].iconHtml;
+              if (aboutContactArr[aci].customIcon) {
+                acIcon.setAttribute('data-custom-icon', 'true');
+              }
+            }
+          }
+        }
+      }
+    } catch(e) {}
+
     renderArticle(currentArticleId);
     renderNewsList();
     renderArticleGrid();
@@ -11668,8 +11832,73 @@ document.getElementById('btnExitEdit').addEventListener('click', function() {
 var DATA_KEYS = [
   'aiyoushe_articles', 'aiyoushe_resources', 'aiyoushe_albums',
   'aiyoushe_announcements', 'aiyoushe_cats', 'aiyoushe_tags',
-  'aiyoushe_featcats', 'aiyoushe_banners', 'aiyoushe_about', 'aiyoushe_contact'
+  'aiyoushe_featcats', 'aiyoushe_banners', 'aiyoushe_about', 'aiyoushe_contact',
+  'aiyoushe_carousel', 'aiyoushe_profile_data', 'aiyoushe_contact_html',
+  'aiyoushe_vip_banner_data', 'aiyoushe_pricing_html', 'aiyoushe_benefits_html',
+  'aiyoushe_faq_data', 'aiyoushe_story_data', 'aiyoushe_value_data',
+  'aiyoushe_about_contact_data', 'aiyoushe_qr_code'
 ];
+
+// ============================
+// Carousel localStorage helpers
+// ============================
+var carouselSlides = [];
+function saveCarouselToStorage() {
+  try {
+    var slides = [];
+    document.querySelectorAll('.carousel-track .carousel-slide').forEach(function(slide) {
+      var img = slide.querySelector('img');
+      var titleEl = slide.querySelector('.slide-overlay h2');
+      var link = slide.querySelector('a.slide-link');
+      var hidden = (slide.style.opacity === '0.4');
+      slides.push({
+        img: img ? img.src : '',
+        title: titleEl ? titleEl.textContent : '',
+        link: link ? link.getAttribute('href') : '',
+        hidden: hidden
+      });
+    });
+    carouselSlides = slides;
+    localStorage.setItem('aiyoushe_carousel', JSON.stringify(slides));
+  } catch(e) {}
+}
+function loadCarouselFromStorage() {
+  var saved = localStorage.getItem('aiyoushe_carousel');
+  if (!saved) return false;
+  try {
+    var slides = JSON.parse(saved);
+    if (!slides || !slides.length) return false;
+    var track = document.getElementById('carouselTrack');
+    if (!track) return false;
+    // Clear existing slides
+    track.innerHTML = '';
+    slides.forEach(function(s, idx) {
+      var slide = document.createElement('div');
+      slide.className = 'carousel-slide';
+      if (s.hidden) {
+        slide.style.opacity = '0.4';
+        slide.style.pointerEvents = 'none';
+      }
+      var imgHtml = '<img src="' + s.img + '" alt="' + (s.title || '') + '">';
+      var overlayHtml = '<div class="slide-overlay"><h2>' + (s.title || '') + '</h2></div>';
+      if (s.link) {
+        slide.innerHTML = '<a class="slide-link" href="' + s.link + '" style="display:block;width:100%;height:100%;position:absolute;top:0;left:0;">' + imgHtml + overlayHtml + '</a>';
+      } else {
+        slide.innerHTML = imgHtml + overlayHtml;
+      }
+      track.appendChild(slide);
+    });
+    // Rebind admin buttons
+    bindBannerEditBtns();
+    // Rebuild dots
+    rebuildDots();
+    currentSlide = 0;
+    totalSlides = slides.length;
+    updateCarousel();
+    carouselSlides = slides;
+    return true;
+  } catch(e) { return false; }
+}
 
 function syncDataToStorage() {
   try {
@@ -11680,6 +11909,118 @@ function syncDataToStorage() {
     localStorage.setItem('aiyoushe_cats', JSON.stringify(articleCategories));
     localStorage.setItem('aiyoushe_tags', JSON.stringify(articleTags));
     localStorage.setItem('aiyoushe_featcats', JSON.stringify(featuredCategories));
+
+    // Carousel
+    saveCarouselToStorage();
+
+    // Profile widget (about page sidebar)
+    var profileAvatarEl = document.getElementById('profileAvatar');
+    var profileNameEl = document.getElementById('profileName');
+    var profileDescEl = document.getElementById('profileDesc');
+    if (profileAvatarEl || profileNameEl || profileDescEl) {
+      var profileData = {
+        avatar: profileAvatarEl ? profileAvatarEl.src : '',
+        name: profileNameEl ? profileNameEl.textContent : '',
+        desc: profileDescEl ? profileDescEl.textContent : '',
+        align: profileDescEl ? (profileDescEl.style.textAlign || 'center') : 'center'
+      };
+      localStorage.setItem('aiyoushe_profile_data', JSON.stringify(profileData));
+    }
+
+    // Contact widget list
+    var contactListEl = document.getElementById('contactList');
+    if (contactListEl) {
+      localStorage.setItem('aiyoushe_contact_html', contactListEl.innerHTML);
+    }
+
+    // VIP Banner
+    var vipTitleEl = document.getElementById('vipBannerTitle');
+    var vipDescEl = document.getElementById('vipBannerDesc');
+    if (vipTitleEl || vipDescEl) {
+      localStorage.setItem('aiyoushe_vip_banner_data', JSON.stringify({
+        title: vipTitleEl ? vipTitleEl.textContent : '',
+        desc: vipDescEl ? vipDescEl.textContent : ''
+      }));
+    }
+
+    // Pricing grid
+    var pricingGridEl = document.querySelector('.pricing-grid');
+    if (pricingGridEl) {
+      localStorage.setItem('aiyoushe_pricing_html', pricingGridEl.innerHTML);
+    }
+
+    // Benefits list
+    var benefitsListEl = document.querySelector('.benefits-list');
+    if (benefitsListEl) {
+      localStorage.setItem('aiyoushe_benefits_html', benefitsListEl.innerHTML);
+    }
+
+    // FAQ items - save from the faq-section container
+    var faqSectionEl = document.querySelector('.faq-section');
+    if (faqSectionEl) {
+      // Save all faq-item innerHTML within the section
+      var faqItems = faqSectionEl.querySelectorAll('.faq-item');
+      var faqData = [];
+      faqItems.forEach(function(item) {
+        var q = item.querySelector('.faq-question');
+        var a = item.querySelector('.faq-answer');
+        faqData.push({
+          question: q ? q.textContent : '',
+          answer: a ? a.textContent : ''
+        });
+      });
+      localStorage.setItem('aiyoushe_faq_data', JSON.stringify(faqData));
+    }
+
+    // About page - story cards
+    var storyCards = document.querySelectorAll('#page-about .story-card');
+    if (storyCards.length) {
+      var storyData = [];
+      storyCards.forEach(function(card) {
+        var h3 = card.querySelector('h3');
+        var ps = [];
+        card.querySelectorAll('p').forEach(function(p) { ps.push(p.textContent); });
+        storyData.push({ title: h3 ? h3.textContent : '', paragraphs: ps });
+      });
+      localStorage.setItem('aiyoushe_story_data', JSON.stringify(storyData));
+    }
+
+    // About page - value cards (philosophy)
+    var valueCards = document.querySelectorAll('#page-about .value-card');
+    if (valueCards.length) {
+      var valueData = [];
+      valueCards.forEach(function(card) {
+        var title = card.querySelector('.value-title');
+        var desc = card.querySelector('.value-desc');
+        var iconEl = card.querySelector('.value-icon');
+        valueData.push({
+          title: title ? title.textContent : '',
+          desc: desc ? desc.textContent : '',
+          iconHtml: iconEl ? iconEl.innerHTML : '',
+          customIcon: iconEl ? (iconEl.getAttribute('data-custom-icon') === 'true') : false
+        });
+      });
+      localStorage.setItem('aiyoushe_value_data', JSON.stringify(valueData));
+    }
+
+    // About page - contact items
+    var aboutContactItems = document.querySelectorAll('#page-about .contact-item');
+    if (aboutContactItems.length) {
+      var aboutContactData = [];
+      aboutContactItems.forEach(function(item) {
+        var label = item.querySelector('.contact-item-label');
+        var value = item.querySelector('.contact-item-value');
+        var iconEl = item.querySelector('.contact-item-icon');
+        aboutContactData.push({
+          label: label ? label.textContent : '',
+          value: value ? value.textContent : '',
+          iconHtml: iconEl ? iconEl.innerHTML : '',
+          customIcon: iconEl ? (iconEl.getAttribute('data-custom-icon') === 'true') : false
+        });
+      });
+      localStorage.setItem('aiyoushe_about_contact_data', JSON.stringify(aboutContactData));
+    }
+
   } catch(e) {
     // localStorage full or unavailable, silently ignore
   }
@@ -11782,6 +12123,7 @@ function bindContactEditBtns() {
                 fileToBase64WithCrop(fileInput.files[0], function(base64) {
                   var logoDiv = item.querySelector('.contact-widget-logo');
                   logoDiv.innerHTML = '<img src="' + base64 + '" alt="' + newLabel + '" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">';
+                  syncDataToStorage();
                 });
               }
               showToast('联系方式已更新');
@@ -11859,6 +12201,7 @@ function bindContactEditBtns() {
                 fileToBase64WithCrop(fileInput.files[0], function(base64) {
                   var logoDiv = div.querySelector('.contact-widget-logo');
                   logoDiv.innerHTML = '<img src="' + base64 + '" alt="' + label + '" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">';
+                  syncDataToStorage();
                 });
               }
               bindContactEditBtns();
@@ -11906,6 +12249,7 @@ function bindProfileEditBtns() {
               if (fileInput.files && fileInput.files[0]) {
                 fileToBase64(fileInput.files[0], function(base64) {
                   document.getElementById('profileAvatar').src = base64;
+                  syncDataToStorage();
                 });
               }
               showToast('个人介绍已更新');
@@ -12041,6 +12385,7 @@ function bindVipEditBtns() {
                 fileToBase64(fileInput.files[0], function(base64) {
                   var iconDiv = item.querySelector('.benefit-icon');
                   iconDiv.innerHTML = '<img src="' + base64 + '" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">';
+                  syncDataToStorage();
                 });
               }
               showToast('会员权益已更新');
