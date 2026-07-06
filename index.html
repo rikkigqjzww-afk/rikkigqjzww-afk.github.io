@@ -4253,7 +4253,16 @@ function extractAndStoreImages(data, prefix) {
   function scan(obj, path) {
     if (!obj || typeof obj !== 'object') return;
     if (Array.isArray(obj)) {
-      for (var i = 0; i < obj.length; i++) scan(obj[i], path + '[' + i + ']');
+      for (var i = 0; i < obj.length; i++) {
+        var item = obj[i];
+        if (typeof item === 'string' && item.length > 5000 && item.indexOf('data:image') === 0) {
+          var imgKey = prefix + path + '[' + i + ']';
+          imageFields[imgKey] = item;
+          obj[i] = '__IMGSTORE__' + imgKey;
+        } else if (typeof item === 'object' && item !== null) {
+          scan(item, path + '[' + i + ']');
+        }
+      }
       return;
     }
     for (var key in obj) {
@@ -4289,7 +4298,15 @@ function restoreImagesFromStore(data, callback) {
   function scan(obj, path) {
     if (!obj || typeof obj !== 'object') return;
     if (Array.isArray(obj)) {
-      for (var i = 0; i < obj.length; i++) scan(obj[i], path + '[' + i + ']');
+      for (var i = 0; i < obj.length; i++) {
+        var item = obj[i];
+        if (typeof item === 'string' && item.indexOf('__IMGSTORE__') === 0) {
+          var imgKey = item.replace('__IMGSTORE__', '');
+          refs.push({ path: path + '[' + i + ']', key: i, parent: obj, imgKey: imgKey });
+        } else if (typeof item === 'object' && item !== null) {
+          scan(item, path + '[' + i + ']');
+        }
+      }
       return;
     }
     for (var key in obj) {
@@ -4314,6 +4331,63 @@ function restoreImagesFromStore(data, callback) {
       }
       done++;
       if (done === refs.length) callback(data);
+    });
+  });
+}
+
+// Helper: extract base64 images from an HTML string and store in IndexedDB
+// Replaces data:image... with __IMGSTORE__:key markers
+function extractImagesFromHTML(html, prefix, callback) {
+  if (!html || typeof html !== 'string') { callback(html || '', 0); return; }
+  var base64Regex = /data:image\/[a-zA-Z+]+;base64,[A-Za-z0-9+/=\s]+/g;
+  var matches = html.match(base64Regex);
+  if (!matches || matches.length === 0) { callback(html, 0); return; }
+  var imageMap = {};
+  var idx = 0;
+  var saved = 0;
+  matches.forEach(function(b64) {
+    var imgKey = prefix + '_img_' + idx;
+    imageMap[b64] = '__IMGSTORE__:' + imgKey;
+    idx++;
+    ImageStore.save(imgKey, b64, function() {
+      saved++;
+      if (saved === matches.length) {
+        var result = html;
+        var keys = Object.keys(imageMap);
+        for (var i = 0; i < keys.length; i++) {
+          // Use split/join for safe replacement since base64 may contain regex-special chars
+          result = result.split(keys[i]).join(imageMap[keys[i]]);
+        }
+        callback(result, keys.length);
+      }
+    });
+  });
+}
+
+// Helper: restore base64 images in an HTML string from IndexedDB
+// Replaces __IMGSTORE__:key markers back with actual base64 data
+function restoreImagesInHTML(html, callback) {
+  if (!html || typeof html !== 'string') { callback(html || ''); return; }
+  var markerRegex = /__IMGSTORE__:([a-zA-Z0-9_.]+)/g;
+  var markers = [];
+  var match;
+  while ((match = markerRegex.exec(html)) !== null) {
+    if (markers.indexOf(match[1]) === -1) {
+      markers.push(match[1]);
+    }
+  }
+  if (markers.length === 0) { callback(html); return; }
+  var result = html;
+  var done = 0;
+  markers.forEach(function(imgKey) {
+    ImageStore.get(imgKey, function(base64) {
+      if (base64) {
+        result = result.split('__IMGSTORE__:' + imgKey).join(base64);
+      } else {
+        result = result.split('__IMGSTORE__:' + imgKey).join('');
+      }
+      done++;
+      if (done === markers.length) callback(result);
     });
   });
 }
@@ -11020,15 +11094,19 @@ function showQrModal() {
       document.body.appendChild(overlay);
       requestAnimationFrame(function(){ overlay.classList.add('show'); });
 
-      // Click overlay to close
+      // Click overlay background to close
       overlay.addEventListener('click', function(e) {
         if (e.target === overlay) { closeModal(overlay); }
       });
 
-      // Close button
-      document.getElementById('btnCloseQrModal').addEventListener('click', function() {
-        closeModal(overlay);
-      });
+      // Close button - use direct onclick to avoid event delegation issues
+      var closeBtn = document.getElementById('btnCloseQrModal');
+      if (closeBtn) {
+        closeBtn.onclick = function(e) {
+          e.stopPropagation();
+          closeModal(overlay);
+        };
+      }
 
       // Load saved QR code from localStorage
       var savedQr = localStorage.getItem('aiyoushe_qr_code');
@@ -11036,38 +11114,41 @@ function showQrModal() {
         document.getElementById('qrCodeArea').innerHTML = '<img src="' + savedQr + '" alt="客服二维码">';
       }
 
-      // Admin mode: show upload button
+      // Admin mode: show upload button with a persistent hidden file input
       if (document.body.classList.contains('admin-mode')) {
-        var uploadDiv = document.createElement('div');
-        uploadDiv.style.cssText = 'margin-top:12px;text-align:center;';
-        uploadDiv.innerHTML = '<button class="admin-edit-btn" id="btnUploadQr">上传二维码图片</button>';
-        overlay.querySelector('.qr-modal-content').appendChild(uploadDiv);
-        setTimeout(function() {
-          var uploadBtn = document.getElementById('btnUploadQr');
-          if (uploadBtn) {
-            uploadBtn.addEventListener('click', function() {
-              var input = document.createElement('input');
-              input.type = 'file';
-              input.accept = 'image/*';
-              input.style.display = 'none';
-              document.body.appendChild(input);
-              input.addEventListener('change', function() {
-                if (this.files && this.files[0]) {
-                  fileToBase64(this.files[0], function(base64) {
-                    var area = overlay.querySelector('#qrCodeArea');
-                    if (area) {
-                      area.innerHTML = '<img src="' + base64 + '" alt="客服二维码">';
-                    }
-                    localStorage.setItem('aiyoushe_qr_code', base64);
-                    showToast('二维码已更新');
-                  });
-                }
-                document.body.removeChild(input);
-              });
-              input.click();
+        // Create a persistent hidden file input for QR upload
+        var qrFileInput = document.createElement('input');
+        qrFileInput.type = 'file';
+        qrFileInput.accept = 'image/*';
+        qrFileInput.style.display = 'none';
+        qrFileInput.id = 'qrFileInputHidden';
+        document.body.appendChild(qrFileInput);
+
+        qrFileInput.onchange = function() {
+          if (this.files && this.files[0]) {
+            fileToBase64(this.files[0], function(base64) {
+              var area = document.getElementById('qrCodeArea');
+              if (area) {
+                area.innerHTML = '<img src="' + base64 + '" alt="客服二维码">';
+              }
+              localStorage.setItem('aiyoushe_qr_code', base64);
+              showToast('二维码已更新');
             });
           }
-        }, 100);
+          this.value = '';
+        };
+
+        var uploadDiv = document.createElement('div');
+        uploadDiv.style.cssText = 'margin-top:12px;text-align:center;';
+        var uploadBtn = document.createElement('button');
+        uploadBtn.className = 'admin-edit-btn';
+        uploadBtn.textContent = '上传二维码图片';
+        uploadBtn.onclick = function(e) {
+          e.stopPropagation();
+          qrFileInput.click();
+        };
+        uploadDiv.appendChild(uploadBtn);
+        overlay.querySelector('.qr-modal-content').appendChild(uploadDiv);
       }
     }
 
@@ -11660,29 +11741,35 @@ function toggleDetailLike() {
     try {
       var savedProfileData = localStorage.getItem('aiyoushe_profile_data');
       if (savedProfileData) {
-        var profileData = JSON.parse(savedProfileData);
-        if (profileData.avatar && document.getElementById('profileAvatar')) {
-          document.getElementById('profileAvatar').src = profileData.avatar;
-        }
-        if (profileData.name && document.getElementById('profileName')) {
-          document.getElementById('profileName').textContent = profileData.name;
-        }
-        if (profileData.desc && document.getElementById('profileDesc')) {
-          document.getElementById('profileDesc').textContent = profileData.desc;
-        }
-        if (profileData.align && document.getElementById('profileDesc')) {
-          document.getElementById('profileDesc').style.textAlign = profileData.align;
-        }
+        restoreImagesInHTML(savedProfileData, function(restoredProfileJson) {
+          try {
+            var profileData = JSON.parse(restoredProfileJson);
+            if (profileData.avatar && document.getElementById('profileAvatar')) {
+              document.getElementById('profileAvatar').src = profileData.avatar;
+            }
+            if (profileData.name && document.getElementById('profileName')) {
+              document.getElementById('profileName').textContent = profileData.name;
+            }
+            if (profileData.desc && document.getElementById('profileDesc')) {
+              document.getElementById('profileDesc').textContent = profileData.desc;
+            }
+            if (profileData.align && document.getElementById('profileDesc')) {
+              document.getElementById('profileDesc').style.textAlign = profileData.align;
+            }
+          } catch(e) {}
+        });
       }
     } catch(e) {}
 
-    // Restore contact widget list
+    // Restore contact widget list - restore images from IndexedDB
     try {
       var savedContactHtml = localStorage.getItem('aiyoushe_contact_html');
       if (savedContactHtml) {
         var contactListEl = document.getElementById('contactList');
         if (contactListEl) {
-          contactListEl.innerHTML = savedContactHtml;
+          restoreImagesInHTML(savedContactHtml, function(restoredHtml) {
+            contactListEl.innerHTML = restoredHtml;
+          });
         }
       }
     } catch(e) {}
@@ -11701,24 +11788,28 @@ function toggleDetailLike() {
       }
     } catch(e) {}
 
-    // Restore pricing grid
+    // Restore pricing grid - restore images from IndexedDB
     try {
       var savedPricingHtml = localStorage.getItem('aiyoushe_pricing_html');
       if (savedPricingHtml) {
         var pricingGridEl = document.querySelector('.pricing-grid');
         if (pricingGridEl) {
-          pricingGridEl.innerHTML = savedPricingHtml;
+          restoreImagesInHTML(savedPricingHtml, function(restoredHtml) {
+            pricingGridEl.innerHTML = restoredHtml;
+          });
         }
       }
     } catch(e) {}
 
-    // Restore benefits list
+    // Restore benefits list - restore images from IndexedDB
     try {
       var savedBenefitsHtml = localStorage.getItem('aiyoushe_benefits_html');
       if (savedBenefitsHtml) {
         var benefitsListEl = document.querySelector('.benefits-list');
         if (benefitsListEl) {
-          benefitsListEl.innerHTML = savedBenefitsHtml;
+          restoreImagesInHTML(savedBenefitsHtml, function(restoredHtml) {
+            benefitsListEl.innerHTML = restoredHtml;
+          });
         }
       }
     } catch(e) {}
@@ -12449,13 +12540,26 @@ function syncDataToStorage() {
         desc: profileDescEl ? profileDescEl.textContent : '',
         align: profileDescEl ? (profileDescEl.style.textAlign || 'center') : 'center'
       };
-      localStorage.setItem('aiyoushe_profile_data', JSON.stringify(profileData));
+      // Extract base64 images from profile avatar
+      if (profileData.avatar && profileData.avatar.indexOf('data:image') === 0) {
+        extractImagesFromHTML(JSON.stringify(profileData), 'profile', function(processed, count) {
+          if (count > 0) {
+            try { profileData = JSON.parse(processed); } catch(e) {}
+          }
+          localStorage.setItem('aiyoushe_profile_data', JSON.stringify(profileData));
+        });
+      } else {
+        localStorage.setItem('aiyoushe_profile_data', JSON.stringify(profileData));
+      }
     }
 
-    // Contact widget list
+    // Contact widget list - extract base64 images from HTML
     var contactListEl = document.getElementById('contactList');
     if (contactListEl) {
-      localStorage.setItem('aiyoushe_contact_html', contactListEl.innerHTML);
+      var contactHtml = contactListEl.innerHTML;
+      extractImagesFromHTML(contactHtml, 'contact', function(processed) {
+        localStorage.setItem('aiyoushe_contact_html', processed);
+      });
     }
 
     // VIP Banner
@@ -12468,16 +12572,22 @@ function syncDataToStorage() {
       }));
     }
 
-    // Pricing grid
+    // Pricing grid - extract base64 images from HTML
     var pricingGridEl = document.querySelector('.pricing-grid');
     if (pricingGridEl) {
-      localStorage.setItem('aiyoushe_pricing_html', pricingGridEl.innerHTML);
+      var pricingHtml = pricingGridEl.innerHTML;
+      extractImagesFromHTML(pricingHtml, 'pricing', function(processed) {
+        localStorage.setItem('aiyoushe_pricing_html', processed);
+      });
     }
 
-    // Benefits list
+    // Benefits list - extract base64 images from HTML
     var benefitsListEl = document.querySelector('.benefits-list');
     if (benefitsListEl) {
-      localStorage.setItem('aiyoushe_benefits_html', benefitsListEl.innerHTML);
+      var benefitsHtml = benefitsListEl.innerHTML;
+      extractImagesFromHTML(benefitsHtml, 'benefits', function(processed) {
+        localStorage.setItem('aiyoushe_benefits_html', processed);
+      });
     }
 
     // FAQ items - save from the faq-section container
@@ -12591,12 +12701,8 @@ function importAllData(jsonString) {
     // Restore IndexedDB images if present
     if (data._indexeddb_images) {
       var imgs = data._indexeddb_images;
-      var imgKeys = Object.keys(imgs);
-      var imgSaved = 0;
-      imgKeys.forEach(function(k) {
-        ImageStore.save(k, imgs[k], function() {
-          imgSaved++;
-        });
+      Object.keys(imgs).forEach(function(k) {
+        ImageStore.save(k, imgs[k]);
       });
     }
     if (count > 0) {
@@ -12608,8 +12714,27 @@ function importAllData(jsonString) {
       articleCategories = JSON.parse(localStorage.getItem('aiyoushe_cats')) || articleCategories;
       articleTags = JSON.parse(localStorage.getItem('aiyoushe_tags')) || articleTags;
       featuredCategories = JSON.parse(localStorage.getItem('aiyoushe_featcats')) || featuredCategories;
+      // Restore images from IndexedDB then re-render
+      restoreImagesFromStore(articles, function(a) {
+        articles = a;
+        restoreImagesFromStore(resourceData, function(r) {
+          resourceData = r;
+          restoreImagesFromStore(albumData, function(al) {
+            albumData = al;
+            renderArticle(currentArticleId);
+            renderNewsList();
+            renderArticleGrid();
+            renderTagCloud();
+            renderAnnouncements();
+            renderFeaturedResources();
+            renderResources();
+            showAlbumList();
+            loadCarouselFromStorage();
+            showToast('已恢复 ' + count + ' 项数据，页面已更新');
+          });
+        });
+      });
     }
-    showToast('已恢复 ' + count + ' 项数据，正在刷新页面...');
     return true;
   } catch (e) {
     showToast('恢复失败：文件格式错误');
@@ -12626,9 +12751,7 @@ document.getElementById('restoreFileInput').addEventListener('change', function(
   if (!file) return;
   var reader = new FileReader();
   reader.onload = function(ev) {
-    if (importAllData(ev.target.result)) {
-      setTimeout(function() { location.reload(); }, 1500);
-    }
+    importAllData(ev.target.result);
   };
   reader.readAsText(file);
   e.target.value = '';
