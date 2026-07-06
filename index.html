@@ -11298,63 +11298,55 @@ function switchPhoto(idx) {
     // VIP
     // ============================
 function showQrModal() {
+      // Remove any existing QR modal
+      var oldQr = document.getElementById('qrModalOverlay');
+      if (oldQr) oldQr.parentNode.removeChild(oldQr);
+
       var overlay = document.createElement('div');
-      overlay.className = 'modal-overlay show';
-      overlay.innerHTML = '<div class="modal-card">' +
-        '<div class="qr-modal-content">' +
-          '<h3>扫码联系客服购买</h3>' +
-          '<div class="qr-code-area" id="qrCodeArea">' +
-            '<div class="qr-placeholder">' +
-              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/><rect x="14" y="18" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/></svg>' +
-              '客服二维码' +
-            '</div>' +
-          '</div>' +
-          '<div class="qr-modal-desc">扫描上方二维码添加客服，咨询购买事宜</div>' +
-          '<button type="button" class="qr-modal-close" id="btnCloseQrModal">关闭</button>' +
+      overlay.id = 'qrModalOverlay';
+      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center;';
+
+      var card = document.createElement('div');
+      card.style.cssText = 'background:#fff;border-radius:12px;max-width:420px;width:90%;padding:28px;text-align:center;box-shadow:0 6px 16px rgba(0,0,0,0.08);';
+      card.innerHTML =
+        '<h3 style="margin:0 0 20px;font-size:18px;color:#333;">扫码联系客服购买</h3>' +
+        '<div id="qrCodeArea" style="width:180px;height:180px;margin:0 auto 16px;background:#f5f5f5;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#999;font-size:13px;">' +
+          '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/><rect x="14" y="18" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/></svg>' +
+          '客服二维码' +
         '</div>' +
-      '</div>';
+        '<p style="color:#999;font-size:13px;margin:0 0 20px;">扫描上方二维码添加客服，咨询购买事宜</p>' +
+        '<div id="qrBtnsArea" style="text-align:center;"></div>';
+      overlay.appendChild(card);
       document.body.appendChild(overlay);
 
-      // Direct close function - no animation dependency
       function closeQrModal() {
-        overlay.classList.remove('show');
-        setTimeout(function() {
-          if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
-        }, 250);
+        var el = document.getElementById('qrModalOverlay');
+        if (el) { el.style.display = 'none'; setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 50); }
       }
 
-      // Click overlay background to close
-      overlay.addEventListener('click', function(e) {
-        if (e.target === overlay) closeQrModal();
+      overlay.addEventListener('mousedown', function(e) {
+        if (e.target === overlay) { e.preventDefault(); e.stopPropagation(); closeQrModal(); }
       });
 
-      // Close button
-      var closeBtn = document.getElementById('btnCloseQrModal');
-      if (closeBtn) {
-        closeBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          e.stopImmediatePropagation();
-          closeQrModal();
-        });
-      }
+      // Close button using INPUT type=button (avoids button submit bug)
+      var closeBtn = document.createElement('input');
+      closeBtn.type = 'button';
+      closeBtn.value = '关闭';
+      closeBtn.style.cssText = 'padding:6px 32px;border:1px solid #d9d9d9;border-radius:16px;background:#fff;font-size:13px;cursor:pointer;margin-right:8px;';
+      closeBtn.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); closeQrModal(); });
+      document.getElementById('qrBtnsArea').appendChild(closeBtn);
 
-      // Also close on ESC key
-      function onEsc(e) {
-        if (e.key === 'Escape' || e.keyCode === 27) {
-          closeQrModal();
-          document.removeEventListener('keydown', onEsc);
-        }
-      }
+      // ESC to close
+      function onEsc(e) { if (e.key === 'Escape' || e.keyCode === 27) { closeQrModal(); document.removeEventListener('keydown', onEsc); } }
       document.addEventListener('keydown', onEsc);
 
-      // Load saved QR code from localStorage
+      // Load saved QR code
       var savedQr = localStorage.getItem('aiyoushe_qr_code');
       if (savedQr) {
-        document.getElementById('qrCodeArea').innerHTML = '<img src="' + savedQr + '" alt="客服二维码">';
+        document.getElementById('qrCodeArea').innerHTML = '<img src="' + savedQr + '" alt="客服二维码" style="width:180px;height:180px;border-radius:8px;object-fit:contain;">';
       }
 
-      // Admin mode: show upload button
+      // Admin mode: upload button
       if (document.body.classList.contains('admin-mode')) {
         var qrFileInput = document.createElement('input');
         qrFileInput.type = 'file';
@@ -11368,7 +11360,7 @@ function showQrModal() {
             fileToBase64(this.files[0], function(base64) {
               var area = document.getElementById('qrCodeArea');
               if (area) {
-                area.innerHTML = '<img src="' + base64 + '" alt="客服二维码">';
+                area.innerHTML = '<img src="' + base64 + '" alt="客服二维码" style="width:180px;height:180px;border-radius:8px;object-fit:contain;">';
               }
               localStorage.setItem('aiyoushe_qr_code', base64);
               showToast('二维码已更新');
@@ -11377,20 +11369,13 @@ function showQrModal() {
           this.value = '';
         });
 
-        var uploadDiv = document.createElement('div');
-        uploadDiv.style.cssText = 'margin-top:12px;text-align:center;';
-        var uploadBtn = document.createElement('button');
+        // Upload button using INPUT type=button
+        var uploadBtn = document.createElement('input');
         uploadBtn.type = 'button';
-        uploadBtn.className = 'admin-edit-btn';
-        uploadBtn.textContent = '上传二维码图片';
-        uploadBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          e.stopImmediatePropagation();
-          qrFileInput.click();
-        });
-        uploadDiv.appendChild(uploadBtn);
-        overlay.querySelector('.qr-modal-content').appendChild(uploadDiv);
+        uploadBtn.value = '上传二维码图片';
+        uploadBtn.style.cssText = 'display:inline-block;margin-top:12px;padding:6px 20px;border:1px solid #1890ff;border-radius:16px;background:#fff;color:#1890ff;font-size:13px;cursor:pointer;';
+        uploadBtn.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); qrFileInput.click(); });
+        document.getElementById('qrBtnsArea').appendChild(uploadBtn);
       }
     }
 
