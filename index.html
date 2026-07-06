@@ -2846,7 +2846,7 @@
 <script data-preview-injected src="https://lf3-static.bytednsdoc.com/obj/eden-cn/8011eh7nupenuvonuhd/previewer-tools.de3cd6a1.umd.js"></script><script data-preview-injected src="https://lf3-static.bytednsdoc.com/obj/eden-cn/8011eh7nupenuvonuhd/previewer-tools.de3cd6a1.umd.js"></script></head>
 <body>
 
-  <div class="admin-banner" id="adminBanner">&#9999;&#65039; 编辑模式已开启 — 管理员已登录 <span style="margin-left:16px;"><button id="btnCloudSync" style="background:#E63946;color:#fff;border:none;padding:3px 12px;border-radius:12px;cursor:pointer;font-size:12px;">云端同步</button></span></div>
+  <div class="admin-banner" id="adminBanner">&#9999;&#65039; 编辑模式已开启 — 管理员已登录 <span style="margin-left:16px;"><button type="button" id="btnCloudSync" style="background:#E63946;color:#fff;border:none;padding:3px 12px;border-radius:12px;cursor:pointer;font-size:12px;">云端同步</button></span></div>
   <div class="toast-container" id="toastContainer"></div>
 
   <div class="mobile-overlay" id="mobileOverlay"></div>
@@ -2883,19 +2883,19 @@
         </a>
       </nav>
       <div class="sidebar-bottom">
-        <button class="btn-admin" id="btnAdmin">
+        <button type="button" class="btn-admin" id="btnAdmin">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"></path></svg>
           <span>管理员</span>
         </button>
-        <button class="btn-exit-edit" id="btnExitEdit">
+        <button type="button" class="btn-exit-edit" id="btnExitEdit">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
           <span>退出编辑</span>
         </button>
-        <button class="btn-backup" id="btnBackup" title="备份数据">
+        <button type="button" class="btn-backup" id="btnBackup" title="备份数据">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
           <span>备份数据</span>
         </button>
-        <button class="btn-restore" id="btnRestore" title="恢复数据">
+        <button type="button" class="btn-restore" id="btnRestore" title="恢复数据">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
           <span>恢复数据</span>
         </button>
@@ -2906,7 +2906,7 @@
       <header class="top-bar">
         <div class="top-bar-inner">
           <div class="mobile-header">
-            <button class="hamburger-btn" id="hamburgerBtn">
+            <button type="button" class="hamburger-btn" id="hamburgerBtn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
             </button>
           </div>
@@ -2916,7 +2916,7 @@
           </div>
           <div class="announce-bar" id="announceBar">
             <div class="announce-scroll" id="announceScroll"></div>
-            <button id="btn-edit-announce" class="admin-edit-btn" title="管理公告" style="flex-shrink:0;padding:2px 8px;font-size:11px;line-height:1.4;border-color:#E63946;color:#E63946;">管理</button>
+            <button type="button" id="btn-edit-announce" class="admin-edit-btn" title="管理公告" style="flex-shrink:0;padding:2px 8px;font-size:11px;line-height:1.4;border-color:#E63946;color:#E63946;">管理</button>
           </div>
         </div>
       </header>
@@ -2929,7 +2929,7 @@
             <div class="content-section">
               <div class="section-header">
                 <h2 id="searchResultsTitle">搜索结果</h2>
-                <button class="btn-back" onclick="clearSearch()" style="margin:0;">
+                <button type="button" class="btn-back" onclick="clearSearch()" style="margin:0;">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                   清除搜索
                 </button>
@@ -2962,21 +2962,21 @@
                 </div>
               </div>
               <div class="carousel-controls">
-                <button class="carousel-btn" onclick="prevSlide()">
+                <button type="button" class="carousel-btn" onclick="prevSlide()">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
                 </button>
-                <button class="carousel-btn" onclick="nextSlide()">
+                <button type="button" class="carousel-btn" onclick="nextSlide()">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
                 </button>
               </div>
               <div class="carousel-dots" id="carouselDots">
-                <button class="carousel-dot active" onclick="goToSlide(0)"></button>
-                <button class="carousel-dot" onclick="goToSlide(1)"></button>
-                <button class="carousel-dot" onclick="goToSlide(2)"></button>
+                <button type="button" class="carousel-dot active" onclick="goToSlide(0)"></button>
+                <button type="button" class="carousel-dot" onclick="goToSlide(1)"></button>
+                <button type="button" class="carousel-dot" onclick="goToSlide(2)"></button>
               </div>
             </div>
             <div class="banner-edit-bar">
-              <button class="admin-edit-btn" id="btnAddBanner">+ 添加轮播图</button>
+              <button type="button" class="admin-edit-btn" id="btnAddBanner">+ 添加轮播图</button>
             </div>
           </div>
 
@@ -2990,18 +2990,18 @@
               </a>
             </div>
             <div class="filter-tabs" id="articleTabs">
-              <button class="filter-tab active" data-cat="all">全部精选</button>
-              <button class="filter-tab" data-cat="week">本周推荐</button>
-              <button class="filter-tab" data-cat="editor">编辑精选</button>
-              <button class="filter-tab" data-cat="tech">技术干货</button>
+              <button type="button" class="filter-tab active" data-cat="all">全部精选</button>
+              <button type="button" class="filter-tab" data-cat="week">本周推荐</button>
+              <button type="button" class="filter-tab" data-cat="editor">编辑精选</button>
+              <button type="button" class="filter-tab" data-cat="tech">技术干货</button>
             </div>
             <div class="article-grid" id="articleGrid">
               <!-- Article 1 -->
               <a class="article-card" data-cat="editor tech" data-id="1" href="javascript:void(0)" onclick="loadArticleDetail(1);switchPage('article-detail')">
                 <div class="article-card-admin-actions">
-                  <button class="admin-edit-btn btn-hide-article" onclick="event.preventDefault();">隐藏文章</button>
-                  <button class="admin-edit-btn btn-remove-featured" onclick="event.preventDefault();">从精选移除</button>
-                  <button class="admin-edit-btn danger btn-delete-article" onclick="event.preventDefault();">删除文章</button>
+                  <button type="button" class="admin-edit-btn btn-hide-article" onclick="event.preventDefault();">隐藏文章</button>
+                  <button type="button" class="admin-edit-btn btn-remove-featured" onclick="event.preventDefault();">从精选移除</button>
+                  <button type="button" class="admin-edit-btn danger btn-delete-article" onclick="event.preventDefault();">删除文章</button>
                 </div>
                 <img src="https://picsum.photos/seed/aiyou-art-1/800/450" alt="2024 年最值得关注的 10 个设计工具推荐" class="article-card-img">
                 <div class="article-card-body">
@@ -3019,11 +3019,11 @@
                     </div>
                   </div>
                   <div class="article-actions">
-                    <button class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
+                    <button type="button" class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                       0
                     </button>
-                    <button class="action-btn" onclick="event.preventDefault();">
+                    <button type="button" class="action-btn" onclick="event.preventDefault();">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
                       收藏
                     </button>
@@ -3033,9 +3033,9 @@
               <!-- Article 2 -->
               <a class="article-card" data-cat="week editor" data-id="2" href="javascript:void(0)" onclick="loadArticleDetail(2);switchPage('article-detail')">
                 <div class="article-card-admin-actions">
-                  <button class="admin-edit-btn btn-hide-article" onclick="event.preventDefault();">隐藏文章</button>
-                  <button class="admin-edit-btn btn-remove-featured" onclick="event.preventDefault();">从精选移除</button>
-                  <button class="admin-edit-btn danger btn-delete-article" onclick="event.preventDefault();">删除文章</button>
+                  <button type="button" class="admin-edit-btn btn-hide-article" onclick="event.preventDefault();">隐藏文章</button>
+                  <button type="button" class="admin-edit-btn btn-remove-featured" onclick="event.preventDefault();">从精选移除</button>
+                  <button type="button" class="admin-edit-btn danger btn-delete-article" onclick="event.preventDefault();">删除文章</button>
                 </div>
                 <img src="https://picsum.photos/seed/aiyou-art-2/800/450" alt="效率提升秘籍" class="article-card-img">
                 <div class="article-card-body">
@@ -3053,11 +3053,11 @@
                     </div>
                   </div>
                   <div class="article-actions">
-                    <button class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
+                    <button type="button" class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                       0
                     </button>
-                    <button class="action-btn" onclick="event.preventDefault();">
+                    <button type="button" class="action-btn" onclick="event.preventDefault();">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
                       收藏
                     </button>
@@ -3067,9 +3067,9 @@
               <!-- Article 3 -->
               <a class="article-card" data-cat="week tech" data-id="3" href="javascript:void(0)" onclick="loadArticleDetail(3);switchPage('article-detail')">
                 <div class="article-card-admin-actions">
-                  <button class="admin-edit-btn btn-hide-article" onclick="event.preventDefault();">隐藏文章</button>
-                  <button class="admin-edit-btn btn-remove-featured" onclick="event.preventDefault();">从精选移除</button>
-                  <button class="admin-edit-btn danger btn-delete-article" onclick="event.preventDefault();">删除文章</button>
+                  <button type="button" class="admin-edit-btn btn-hide-article" onclick="event.preventDefault();">隐藏文章</button>
+                  <button type="button" class="admin-edit-btn btn-remove-featured" onclick="event.preventDefault();">从精选移除</button>
+                  <button type="button" class="admin-edit-btn danger btn-delete-article" onclick="event.preventDefault();">删除文章</button>
                 </div>
                 <img src="https://picsum.photos/seed/aiyou-art-3/800/450" alt="免费资源合集" class="article-card-img">
                 <div class="article-card-body">
@@ -3087,11 +3087,11 @@
                     </div>
                   </div>
                   <div class="article-actions">
-                    <button class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
+                    <button type="button" class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                       0
                     </button>
-                    <button class="action-btn" onclick="event.preventDefault();">
+                    <button type="button" class="action-btn" onclick="event.preventDefault();">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
                       收藏
                     </button>
@@ -3101,9 +3101,9 @@
               <!-- Article 4 -->
               <a class="article-card" data-cat="editor" data-id="4" href="javascript:void(0)" onclick="loadArticleDetail(4);switchPage('article-detail')">
                 <div class="article-card-admin-actions">
-                  <button class="admin-edit-btn btn-hide-article" onclick="event.preventDefault();">隐藏文章</button>
-                  <button class="admin-edit-btn btn-remove-featured" onclick="event.preventDefault();">从精选移除</button>
-                  <button class="admin-edit-btn danger btn-delete-article" onclick="event.preventDefault();">删除文章</button>
+                  <button type="button" class="admin-edit-btn btn-hide-article" onclick="event.preventDefault();">隐藏文章</button>
+                  <button type="button" class="admin-edit-btn btn-remove-featured" onclick="event.preventDefault();">从精选移除</button>
+                  <button type="button" class="admin-edit-btn danger btn-delete-article" onclick="event.preventDefault();">删除文章</button>
                 </div>
                 <img src="https://picsum.photos/seed/aiyou-art-4/800/450" alt="如何打造个人品牌" class="article-card-img">
                 <div class="article-card-body">
@@ -3121,11 +3121,11 @@
                     </div>
                   </div>
                   <div class="article-actions">
-                    <button class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
+                    <button type="button" class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                       0
                     </button>
-                    <button class="action-btn" onclick="event.preventDefault();">
+                    <button type="button" class="action-btn" onclick="event.preventDefault();">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
                       收藏
                     </button>
@@ -3157,53 +3157,53 @@
             </div>
 
             <div class="filter-tabs" id="newsTabs">
-              <button class="filter-tab active" data-cat="all">全部</button>
+              <button type="button" class="filter-tab active" data-cat="all">全部</button>
               <div class="filter-tab-group" data-parent="design">
-                <button class="filter-tab has-sub" data-cat="design">设计</button>
+                <button type="button" class="filter-tab has-sub" data-cat="design">设计</button>
                 <div class="sub-tabs">
-                  <button class="filter-tab sub-tab" data-cat="design-tools">设计工具</button>
-                  <button class="filter-tab sub-tab" data-cat="design-color">配色技巧</button>
-                  <button class="filter-tab sub-tab" data-cat="design-trend">设计趋势</button>
+                  <button type="button" class="filter-tab sub-tab" data-cat="design-tools">设计工具</button>
+                  <button type="button" class="filter-tab sub-tab" data-cat="design-color">配色技巧</button>
+                  <button type="button" class="filter-tab sub-tab" data-cat="design-trend">设计趋势</button>
                 </div>
               </div>
               <div class="filter-tab-group" data-parent="operation">
-                <button class="filter-tab has-sub" data-cat="operation">运营</button>
+                <button type="button" class="filter-tab has-sub" data-cat="operation">运营</button>
                 <div class="sub-tabs">
-                  <button class="filter-tab sub-tab" data-cat="op-social">社交媒体</button>
-                  <button class="filter-tab sub-tab" data-cat="op-traffic">流量运营</button>
+                  <button type="button" class="filter-tab sub-tab" data-cat="op-social">社交媒体</button>
+                  <button type="button" class="filter-tab sub-tab" data-cat="op-traffic">流量运营</button>
                 </div>
               </div>
               <div class="filter-tab-group" data-parent="tech">
-                <button class="filter-tab has-sub" data-cat="tech">技术</button>
+                <button type="button" class="filter-tab has-sub" data-cat="tech">技术</button>
                 <div class="sub-tabs">
-                  <button class="filter-tab sub-tab" data-cat="tech-ai">AI 工具</button>
-                  <button class="filter-tab sub-tab" data-cat="tech-frontend">前端开发</button>
+                  <button type="button" class="filter-tab sub-tab" data-cat="tech-ai">AI 工具</button>
+                  <button type="button" class="filter-tab sub-tab" data-cat="tech-frontend">前端开发</button>
                 </div>
               </div>
               <div class="filter-tab-group" data-parent="marketing">
-                <button class="filter-tab has-sub" data-cat="marketing">营销</button>
+                <button type="button" class="filter-tab has-sub" data-cat="marketing">营销</button>
                 <div class="sub-tabs">
-                  <button class="filter-tab sub-tab" data-cat="mkt-video">短视频</button>
-                  <button class="filter-tab sub-tab" data-cat="mkt-brand">品牌营销</button>
+                  <button type="button" class="filter-tab sub-tab" data-cat="mkt-video">短视频</button>
+                  <button type="button" class="filter-tab sub-tab" data-cat="mkt-brand">品牌营销</button>
                 </div>
               </div>
             </div>
 
             <div class="sort-bar" id="newsSortBar" style="margin-bottom:12px;display:flex;gap:8px;align-items:center;">
               <span style="font-size:13px;color:rgba(18,18,18,0.45);">排序：</span>
-              <button class="sort-btn active" data-sort="date" style="padding:6px 14px;border:1px solid #f0f0f0;background:#fff;border-radius:20px;font-size:13px;color:rgba(18,18,18,0.7);cursor:pointer;transition:all 0.2s;">最新发布</button>
-              <button class="sort-btn" data-sort="reads" style="padding:6px 14px;border:1px solid #f0f0f0;background:#fff;border-radius:20px;font-size:13px;color:rgba(18,18,18,0.7);cursor:pointer;transition:all 0.2s;">最多阅读</button>
-              <button class="sort-btn" data-sort="likes" style="padding:6px 14px;border:1px solid #f0f0f0;background:#fff;border-radius:20px;font-size:13px;color:rgba(18,18,18,0.7);cursor:pointer;transition:all 0.2s;">最多点赞</button>
+              <button type="button" class="sort-btn active" data-sort="date" style="padding:6px 14px;border:1px solid #f0f0f0;background:#fff;border-radius:20px;font-size:13px;color:rgba(18,18,18,0.7);cursor:pointer;transition:all 0.2s;">最新发布</button>
+              <button type="button" class="sort-btn" data-sort="reads" style="padding:6px 14px;border:1px solid #f0f0f0;background:#fff;border-radius:20px;font-size:13px;color:rgba(18,18,18,0.7);cursor:pointer;transition:all 0.2s;">最多阅读</button>
+              <button type="button" class="sort-btn" data-sort="likes" style="padding:6px 14px;border:1px solid #f0f0f0;background:#fff;border-radius:20px;font-size:13px;color:rgba(18,18,18,0.7);cursor:pointer;transition:all 0.2s;">最多点赞</button>
             </div>
 
-            <button class="admin-edit-btn btn-add-news" id="btnAddNews" style="margin-bottom:12px;">+ 新增文章</button>
+            <button type="button" class="admin-edit-btn btn-add-news" id="btnAddNews" style="margin-bottom:12px;">+ 新增文章</button>
             <div class="news-list" id="newsList">
               <!-- Article 1: design / design-tools -->
               <a class="news-card" data-cat="design" data-sub-cat="design-tools" data-id="1" href="article-detail.html?id=1">
                 <div class="news-card-admin-actions">
-                  <button class="admin-edit-btn btn-hide-news" onclick="event.preventDefault();">隐藏</button>
-                  <button class="admin-edit-btn btn-edit-news" onclick="event.preventDefault();">编辑</button>
-                  <button class="admin-edit-btn danger btn-delete-news" onclick="event.preventDefault();">删除</button>
+                  <button type="button" class="admin-edit-btn btn-hide-news" onclick="event.preventDefault();">隐藏</button>
+                  <button type="button" class="admin-edit-btn btn-edit-news" onclick="event.preventDefault();">编辑</button>
+                  <button type="button" class="admin-edit-btn danger btn-delete-news" onclick="event.preventDefault();">删除</button>
                 </div>
                 <div class="news-card-img-wrap">
                   <img src="https://picsum.photos/seed/aiyou-news-1/440/296" alt="">
@@ -3225,11 +3225,11 @@
                     </div>
                   </div>
                   <div class="news-card-actions">
-                    <button class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
+                    <button type="button" class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                       0
                     </button>
-                    <button class="action-btn" onclick="event.preventDefault();">
+                    <button type="button" class="action-btn" onclick="event.preventDefault();">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
                       收藏
                     </button>
@@ -3240,9 +3240,9 @@
               <!-- Article 2: design / design-color -->
               <a class="news-card" data-cat="design" data-sub-cat="design-color" data-id="2" href="article-detail.html?id=2">
                 <div class="news-card-admin-actions">
-                  <button class="admin-edit-btn btn-hide-news" onclick="event.preventDefault();">隐藏</button>
-                  <button class="admin-edit-btn btn-edit-news" onclick="event.preventDefault();">编辑</button>
-                  <button class="admin-edit-btn danger btn-delete-news" onclick="event.preventDefault();">删除</button>
+                  <button type="button" class="admin-edit-btn btn-hide-news" onclick="event.preventDefault();">隐藏</button>
+                  <button type="button" class="admin-edit-btn btn-edit-news" onclick="event.preventDefault();">编辑</button>
+                  <button type="button" class="admin-edit-btn danger btn-delete-news" onclick="event.preventDefault();">删除</button>
                 </div>
                 <div class="news-card-img-wrap">
                   <img src="https://picsum.photos/seed/aiyou-news-2/440/296" alt="">
@@ -3264,11 +3264,11 @@
                     </div>
                   </div>
                   <div class="news-card-actions">
-                    <button class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
+                    <button type="button" class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                       0
                     </button>
-                    <button class="action-btn" onclick="event.preventDefault();">
+                    <button type="button" class="action-btn" onclick="event.preventDefault();">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
                       收藏
                     </button>
@@ -3279,9 +3279,9 @@
               <!-- Article 3: design / design-trend -->
               <a class="news-card" data-cat="design" data-sub-cat="design-trend" data-id="3" href="article-detail.html?id=3">
                 <div class="news-card-admin-actions">
-                  <button class="admin-edit-btn btn-hide-news" onclick="event.preventDefault();">隐藏</button>
-                  <button class="admin-edit-btn btn-edit-news" onclick="event.preventDefault();">编辑</button>
-                  <button class="admin-edit-btn danger btn-delete-news" onclick="event.preventDefault();">删除</button>
+                  <button type="button" class="admin-edit-btn btn-hide-news" onclick="event.preventDefault();">隐藏</button>
+                  <button type="button" class="admin-edit-btn btn-edit-news" onclick="event.preventDefault();">编辑</button>
+                  <button type="button" class="admin-edit-btn danger btn-delete-news" onclick="event.preventDefault();">删除</button>
                 </div>
                 <div class="news-card-img-wrap">
                   <img src="https://picsum.photos/seed/aiyou-news-3/440/296" alt="">
@@ -3302,11 +3302,11 @@
                     </div>
                   </div>
                   <div class="news-card-actions">
-                    <button class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
+                    <button type="button" class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                       0
                     </button>
-                    <button class="action-btn" onclick="event.preventDefault();">
+                    <button type="button" class="action-btn" onclick="event.preventDefault();">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
                       收藏
                     </button>
@@ -3317,9 +3317,9 @@
               <!-- Article 4: operation / op-social -->
               <a class="news-card" data-cat="operation" data-sub-cat="op-social" data-id="4" href="article-detail.html?id=4">
                 <div class="news-card-admin-actions">
-                  <button class="admin-edit-btn btn-hide-news" onclick="event.preventDefault();">隐藏</button>
-                  <button class="admin-edit-btn btn-edit-news" onclick="event.preventDefault();">编辑</button>
-                  <button class="admin-edit-btn danger btn-delete-news" onclick="event.preventDefault();">删除</button>
+                  <button type="button" class="admin-edit-btn btn-hide-news" onclick="event.preventDefault();">隐藏</button>
+                  <button type="button" class="admin-edit-btn btn-edit-news" onclick="event.preventDefault();">编辑</button>
+                  <button type="button" class="admin-edit-btn danger btn-delete-news" onclick="event.preventDefault();">删除</button>
                 </div>
                 <div class="news-card-img-wrap">
                   <img src="https://picsum.photos/seed/aiyou-news-4/440/296" alt="">
@@ -3341,11 +3341,11 @@
                     </div>
                   </div>
                   <div class="news-card-actions">
-                    <button class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
+                    <button type="button" class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                       0
                     </button>
-                    <button class="action-btn" onclick="event.preventDefault();">
+                    <button type="button" class="action-btn" onclick="event.preventDefault();">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
                       收藏
                     </button>
@@ -3356,9 +3356,9 @@
               <!-- Article 5: operation / op-traffic -->
               <a class="news-card" data-cat="operation" data-sub-cat="op-traffic" data-id="5" href="article-detail.html?id=5">
                 <div class="news-card-admin-actions">
-                  <button class="admin-edit-btn btn-hide-news" onclick="event.preventDefault();">隐藏</button>
-                  <button class="admin-edit-btn btn-edit-news" onclick="event.preventDefault();">编辑</button>
-                  <button class="admin-edit-btn danger btn-delete-news" onclick="event.preventDefault();">删除</button>
+                  <button type="button" class="admin-edit-btn btn-hide-news" onclick="event.preventDefault();">隐藏</button>
+                  <button type="button" class="admin-edit-btn btn-edit-news" onclick="event.preventDefault();">编辑</button>
+                  <button type="button" class="admin-edit-btn danger btn-delete-news" onclick="event.preventDefault();">删除</button>
                 </div>
                 <div class="news-card-img-wrap">
                   <img src="https://picsum.photos/seed/aiyou-news-5/440/296" alt="">
@@ -3380,11 +3380,11 @@
                     </div>
                   </div>
                   <div class="news-card-actions">
-                    <button class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
+                    <button type="button" class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                       0
                     </button>
-                    <button class="action-btn" onclick="event.preventDefault();">
+                    <button type="button" class="action-btn" onclick="event.preventDefault();">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
                       收藏
                     </button>
@@ -3395,9 +3395,9 @@
               <!-- Article 6: tech / tech-ai -->
               <a class="news-card" data-cat="tech" data-sub-cat="tech-ai" data-id="6" href="article-detail.html?id=6">
                 <div class="news-card-admin-actions">
-                  <button class="admin-edit-btn btn-hide-news" onclick="event.preventDefault();">隐藏</button>
-                  <button class="admin-edit-btn btn-edit-news" onclick="event.preventDefault();">编辑</button>
-                  <button class="admin-edit-btn danger btn-delete-news" onclick="event.preventDefault();">删除</button>
+                  <button type="button" class="admin-edit-btn btn-hide-news" onclick="event.preventDefault();">隐藏</button>
+                  <button type="button" class="admin-edit-btn btn-edit-news" onclick="event.preventDefault();">编辑</button>
+                  <button type="button" class="admin-edit-btn danger btn-delete-news" onclick="event.preventDefault();">删除</button>
                 </div>
                 <div class="news-card-img-wrap">
                   <img src="https://picsum.photos/seed/aiyou-news-6/440/296" alt="">
@@ -3419,11 +3419,11 @@
                     </div>
                   </div>
                   <div class="news-card-actions">
-                    <button class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
+                    <button type="button" class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                       0
                     </button>
-                    <button class="action-btn" onclick="event.preventDefault();">
+                    <button type="button" class="action-btn" onclick="event.preventDefault();">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
                       收藏
                     </button>
@@ -3434,9 +3434,9 @@
               <!-- Article 7: tech / tech-frontend -->
               <a class="news-card" data-cat="tech" data-sub-cat="tech-frontend" data-id="7" href="article-detail.html?id=7">
                 <div class="news-card-admin-actions">
-                  <button class="admin-edit-btn btn-hide-news" onclick="event.preventDefault();">隐藏</button>
-                  <button class="admin-edit-btn btn-edit-news" onclick="event.preventDefault();">编辑</button>
-                  <button class="admin-edit-btn danger btn-delete-news" onclick="event.preventDefault();">删除</button>
+                  <button type="button" class="admin-edit-btn btn-hide-news" onclick="event.preventDefault();">隐藏</button>
+                  <button type="button" class="admin-edit-btn btn-edit-news" onclick="event.preventDefault();">编辑</button>
+                  <button type="button" class="admin-edit-btn danger btn-delete-news" onclick="event.preventDefault();">删除</button>
                 </div>
                 <div class="news-card-img-wrap">
                   <img src="https://picsum.photos/seed/aiyou-news-7/440/296" alt="">
@@ -3458,11 +3458,11 @@
                     </div>
                   </div>
                   <div class="news-card-actions">
-                    <button class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
+                    <button type="button" class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                       0
                     </button>
-                    <button class="action-btn" onclick="event.preventDefault();">
+                    <button type="button" class="action-btn" onclick="event.preventDefault();">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
                       收藏
                     </button>
@@ -3473,9 +3473,9 @@
               <!-- Article 8: marketing / mkt-video -->
               <a class="news-card" data-cat="marketing" data-sub-cat="mkt-video" data-id="8" href="article-detail.html?id=8">
                 <div class="news-card-admin-actions">
-                  <button class="admin-edit-btn btn-hide-news" onclick="event.preventDefault();">隐藏</button>
-                  <button class="admin-edit-btn btn-edit-news" onclick="event.preventDefault();">编辑</button>
-                  <button class="admin-edit-btn danger btn-delete-news" onclick="event.preventDefault();">删除</button>
+                  <button type="button" class="admin-edit-btn btn-hide-news" onclick="event.preventDefault();">隐藏</button>
+                  <button type="button" class="admin-edit-btn btn-edit-news" onclick="event.preventDefault();">编辑</button>
+                  <button type="button" class="admin-edit-btn danger btn-delete-news" onclick="event.preventDefault();">删除</button>
                 </div>
                 <div class="news-card-img-wrap">
                   <img src="https://picsum.photos/seed/aiyou-news-8/440/296" alt="">
@@ -3497,11 +3497,11 @@
                     </div>
                   </div>
                   <div class="news-card-actions">
-                    <button class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
+                    <button type="button" class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                       0
                     </button>
-                    <button class="action-btn" onclick="event.preventDefault();">
+                    <button type="button" class="action-btn" onclick="event.preventDefault();">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
                       收藏
                     </button>
@@ -3518,39 +3518,39 @@
             <div class="page-title-bar">
               <h2>资源列表</h2>
               <span class="subtitle" id="resourceCount">共 6 件资源</span>
-              <button class="admin-edit-btn" id="btnAddResource" style="margin-left:auto;">+ 新增资源</button>
+              <button type="button" class="admin-edit-btn" id="btnAddResource" style="margin-left:auto;">+ 新增资源</button>
             </div>
 
             <div class="filter-section">
               <div class="filter-row">
                 <span class="filter-label">分类筛选</span>
                 <div class="filter-chips" id="catFilter">
-                  <button class="filter-chip active" data-cat="all">全部</button>
-                  <button class="filter-chip" data-cat="tutorial">教程合集</button>
-                  <button class="filter-chip" data-cat="template">模板素材</button>
-                  <button class="filter-chip" data-cat="material">学习资料</button>
-                  <button class="filter-chip" data-cat="tool">效率工具</button>
+                  <button type="button" class="filter-chip active" data-cat="all">全部</button>
+                  <button type="button" class="filter-chip" data-cat="tutorial">教程合集</button>
+                  <button type="button" class="filter-chip" data-cat="template">模板素材</button>
+                  <button type="button" class="filter-chip" data-cat="material">学习资料</button>
+                  <button type="button" class="filter-chip" data-cat="tool">效率工具</button>
                 </div>
               </div>
               <div class="filter-row">
                 <span class="filter-label">标签筛选</span>
                 <div class="filter-chips" id="tagFilter">
-                  <button class="filter-chip tag-chip active" data-tag="all">全部</button>
-                  <button class="filter-chip tag-chip" data-tag="ps">PS教程</button>
-                  <button class="filter-chip tag-chip" data-tag="video">视频课程</button>
-                  <button class="filter-chip tag-chip" data-tag="design-entry">设计入门</button>
-                  <button class="filter-chip tag-chip" data-tag="excel">Excel模板</button>
-                  <button class="filter-chip tag-chip" data-tag="office">办公效率</button>
-                  <button class="filter-chip tag-chip" data-tag="data">数据分析</button>
-                  <button class="filter-chip tag-chip" data-tag="ppt">PPT模板</button>
-                  <button class="filter-chip tag-chip" data-tag="business">商务演示</button>
-                  <button class="filter-chip tag-chip" data-tag="report">汇报模板</button>
-                  <button class="filter-chip tag-chip" data-tag="notion">Notion模板</button>
-                  <button class="filter-chip tag-chip" data-tag="life">生活管理</button>
-                  <button class="filter-chip tag-chip" data-tag="ui">UI素材</button>
-                  <button class="filter-chip tag-chip" data-tag="figma">Figma</button>
-                  <button class="filter-chip tag-chip" data-tag="frontend">学习资料</button>
-                  <button class="filter-chip tag-chip" data-tag="dev">前端开发</button>
+                  <button type="button" class="filter-chip tag-chip active" data-tag="all">全部</button>
+                  <button type="button" class="filter-chip tag-chip" data-tag="ps">PS教程</button>
+                  <button type="button" class="filter-chip tag-chip" data-tag="video">视频课程</button>
+                  <button type="button" class="filter-chip tag-chip" data-tag="design-entry">设计入门</button>
+                  <button type="button" class="filter-chip tag-chip" data-tag="excel">Excel模板</button>
+                  <button type="button" class="filter-chip tag-chip" data-tag="office">办公效率</button>
+                  <button type="button" class="filter-chip tag-chip" data-tag="data">数据分析</button>
+                  <button type="button" class="filter-chip tag-chip" data-tag="ppt">PPT模板</button>
+                  <button type="button" class="filter-chip tag-chip" data-tag="business">商务演示</button>
+                  <button type="button" class="filter-chip tag-chip" data-tag="report">汇报模板</button>
+                  <button type="button" class="filter-chip tag-chip" data-tag="notion">Notion模板</button>
+                  <button type="button" class="filter-chip tag-chip" data-tag="life">生活管理</button>
+                  <button type="button" class="filter-chip tag-chip" data-tag="ui">UI素材</button>
+                  <button type="button" class="filter-chip tag-chip" data-tag="figma">Figma</button>
+                  <button type="button" class="filter-chip tag-chip" data-tag="frontend">学习资料</button>
+                  <button type="button" class="filter-chip tag-chip" data-tag="dev">前端开发</button>
                 </div>
               </div>
             </div>
@@ -3574,9 +3574,9 @@
 
           <!-- Fullscreen Lightbox -->
           <div class="fullscreen-overlay" id="fullscreenLightbox">
-            <button class="fullscreen-close" id="fullscreenClose">&times;</button>
-            <button class="fullscreen-nav prev" id="fullscreenPrev">&#10094;</button>
-            <button class="fullscreen-nav next" id="fullscreenNext">&#10095;</button>
+            <button type="button" class="fullscreen-close" id="fullscreenClose">&times;</button>
+            <button type="button" class="fullscreen-nav prev" id="fullscreenPrev">&#10094;</button>
+            <button type="button" class="fullscreen-nav next" id="fullscreenNext">&#10095;</button>
             <img id="fullscreenImg" src="" alt="预览">
             <div class="fullscreen-counter" id="fullscreenCounter"></div>
           </div>
@@ -3587,8 +3587,8 @@
             <div class="vip-banner">
               <h2 id="vipBannerTitle">开通会员，畅享全站资源</h2>
               <p id="vipBannerDesc">海量设计素材、办公模板、学习资料一键下载，持续更新中</p>
-              <button class="btn-vip btn-open-vip">立即开通</button>
-              <button class="admin-edit-btn btn-edit-vip-banner" style="margin-top:12px;">编辑 Banner</button>
+              <button type="button" class="btn-vip btn-open-vip">立即开通</button>
+              <button type="button" class="admin-edit-btn btn-edit-vip-banner" style="margin-top:12px;">编辑 Banner</button>
             </div>
           </div>
 
@@ -3615,8 +3615,8 @@
                   <li>社区交流权限</li>
                 </ul>
                 <div class="pricing-actions">
-                  <button class="pricing-btn-primary active btn-choose-plan">立即开通</button>
-                  <button class="pricing-btn-secondary admin-edit-btn btn-edit-plan">编辑</button>
+                  <button type="button" class="pricing-btn-primary active btn-choose-plan">立即开通</button>
+                  <button type="button" class="pricing-btn-secondary admin-edit-btn btn-edit-plan">编辑</button>
                 </div>
               </div>
               <!-- 普通会员（推荐） -->
@@ -3640,8 +3640,8 @@
                   <li>商品享受 8 折优惠</li>
                 </ul>
                 <div class="pricing-actions">
-                  <button class="pricing-btn-primary active btn-choose-plan">立即开通</button>
-                  <button class="pricing-btn-secondary admin-edit-btn btn-edit-plan">编辑</button>
+                  <button type="button" class="pricing-btn-primary active btn-choose-plan">立即开通</button>
+                  <button type="button" class="pricing-btn-secondary admin-edit-btn btn-edit-plan">编辑</button>
                 </div>
               </div>
               <!-- 高级会员 -->
@@ -3664,8 +3664,8 @@
                   <li>商品享受 7 折优惠</li>
                 </ul>
                 <div class="pricing-actions">
-                  <button class="pricing-btn-primary active btn-choose-plan">立即开通</button>
-                  <button class="pricing-btn-secondary admin-edit-btn btn-edit-plan">编辑</button>
+                  <button type="button" class="pricing-btn-primary active btn-choose-plan">立即开通</button>
+                  <button type="button" class="pricing-btn-secondary admin-edit-btn btn-edit-plan">编辑</button>
                 </div>
               </div>
             </div>
@@ -3684,7 +3684,7 @@
                   <div class="benefit-title">全站资源免费下载</div>
                   <div class="benefit-desc">PPT、海报、名片、字体、图标等全部资源无限下载</div>
                 </div>
-                <button class="admin-edit-btn btn-edit-benefit">编辑</button>
+                <button type="button" class="admin-edit-btn btn-edit-benefit">编辑</button>
               </div>
               <div class="benefit-item">
                 <div class="benefit-icon">
@@ -3694,7 +3694,7 @@
                   <div class="benefit-title">优先获取新资源</div>
                   <div class="benefit-desc">每周上新资源，会员可第一时间获取最新素材</div>
                 </div>
-                <button class="admin-edit-btn btn-edit-benefit">编辑</button>
+                <button type="button" class="admin-edit-btn btn-edit-benefit">编辑</button>
               </div>
               <div class="benefit-item">
                 <div class="benefit-icon">
@@ -3704,7 +3704,7 @@
                   <div class="benefit-title">专属客服通道</div>
                   <div class="benefit-desc">一对一客服支持，优先响应你的需求和问题</div>
                 </div>
-                <button class="admin-edit-btn btn-edit-benefit">编辑</button>
+                <button type="button" class="admin-edit-btn btn-edit-benefit">编辑</button>
               </div>
               <div class="benefit-item">
                 <div class="benefit-icon">
@@ -3714,7 +3714,7 @@
                   <div class="benefit-title">独家高级模板</div>
                   <div class="benefit-desc">仅限会员的高级模板和精品资源，品质更高更专业</div>
                 </div>
-                <button class="admin-edit-btn btn-edit-benefit">编辑</button>
+                <button type="button" class="admin-edit-btn btn-edit-benefit">编辑</button>
               </div>
             </div>
           </div>
@@ -3726,22 +3726,22 @@
             <div class="faq-item">
               <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">开通会员后多久可以开始下载？</div>
               <div class="faq-answer">开通会员成功后，立即生效，可马上开始下载全站资源，无需等待。</div>
-              <button class="admin-edit-btn btn-edit-faq">编辑</button>
+              <button type="button" class="admin-edit-btn btn-edit-faq">编辑</button>
             </div>
             <div class="faq-item">
               <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">会员到期后已下载的资源还能用吗？</div>
               <div class="faq-answer">可以。已下载到本地的资源不会受会员到期影响，你可以继续使用。但如果需要下载新资源，需要续费或重新开通。</div>
-              <button class="admin-edit-btn btn-edit-faq">编辑</button>
+              <button type="button" class="admin-edit-btn btn-edit-faq">编辑</button>
             </div>
             <div class="faq-item">
               <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">可以申请退款吗？</div>
               <div class="faq-answer">开通后 3 天内且下载资源不超过 5 份，可联系客服申请全额退款。超过 3 天或大量下载后不支持退款。</div>
-              <button class="admin-edit-btn btn-edit-faq">编辑</button>
+              <button type="button" class="admin-edit-btn btn-edit-faq">编辑</button>
             </div>
             <div class="faq-item">
               <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">资源可以商用吗？</div>
               <div class="faq-answer">大部分资源可以用于个人和商业用途，但部分包含特殊授权的资源请查看具体说明。如有疑问请联系客服确认。</div>
-              <button class="admin-edit-btn btn-edit-faq">编辑</button>
+              <button type="button" class="admin-edit-btn btn-edit-faq">编辑</button>
             </div>
           </div>
           </section>
@@ -3869,7 +3869,7 @@
         <aside class="right-sidebar">
           <!-- Profile Widget -->
           <div class="sidebar-widget profile-widget" id="profileWidget">
-            <button class="btn-edit-profile-inline admin-edit-btn" id="btnEditProfile">编辑个人介绍</button>
+            <button type="button" class="btn-edit-profile-inline admin-edit-btn" id="btnEditProfile">编辑个人介绍</button>
             <img src="https://picsum.photos/seed/aiyoushe-avatar/200/200" alt="艾优社" class="profile-widget-avatar" id="profileAvatar">
             <div class="profile-widget-name" id="profileName">艾优社</div>
             <div class="profile-widget-desc" id="profileDesc">专注于分享优质设计素材、办公模板和学习资料的虚拟资源博主。深耕数字内容领域 5 年，累计服务超过 10000 名用户。</div>
@@ -3879,7 +3879,7 @@
           <div class="sidebar-widget" id="contactWidget">
             <div class="sidebar-widget-title">
               联系方式
-              <button class="admin-edit-btn" id="btnAddContact">+ 添加</button>
+              <button type="button" class="admin-edit-btn" id="btnAddContact">+ 添加</button>
             </div>
             <div class="contact-widget-list" id="contactList">
               <div class="contact-widget-item" data-contact-id="1">
@@ -3891,9 +3891,9 @@
                   <div class="contact-w-value">aiyoushe_vip</div>
                 </div>
                 <div class="contact-admin-actions">
-                  <button class="admin-edit-btn btn-edit-contact">编辑</button>
-                  <button class="admin-edit-btn btn-hide-contact">隐藏</button>
-                  <button class="admin-edit-btn danger btn-delete-contact">删除</button>
+                  <button type="button" class="admin-edit-btn btn-edit-contact">编辑</button>
+                  <button type="button" class="admin-edit-btn btn-hide-contact">隐藏</button>
+                  <button type="button" class="admin-edit-btn danger btn-delete-contact">删除</button>
                 </div>
               </div>
               <div class="contact-widget-item" data-contact-id="2">
@@ -3905,9 +3905,9 @@
                   <div class="contact-w-value">hello@aiyoushe.com</div>
                 </div>
                 <div class="contact-admin-actions">
-                  <button class="admin-edit-btn btn-edit-contact">编辑</button>
-                  <button class="admin-edit-btn btn-hide-contact">隐藏</button>
-                  <button class="admin-edit-btn danger btn-delete-contact">删除</button>
+                  <button type="button" class="admin-edit-btn btn-edit-contact">编辑</button>
+                  <button type="button" class="admin-edit-btn btn-hide-contact">隐藏</button>
+                  <button type="button" class="admin-edit-btn danger btn-delete-contact">删除</button>
                 </div>
               </div>
               <div class="contact-widget-item" data-contact-id="3">
@@ -3919,9 +3919,9 @@
                   <div class="contact-w-value">123456789</div>
                 </div>
                 <div class="contact-admin-actions">
-                  <button class="admin-edit-btn btn-edit-contact">编辑</button>
-                  <button class="admin-edit-btn btn-hide-contact">隐藏</button>
-                  <button class="admin-edit-btn danger btn-delete-contact">删除</button>
+                  <button type="button" class="admin-edit-btn btn-edit-contact">编辑</button>
+                  <button type="button" class="admin-edit-btn btn-hide-contact">隐藏</button>
+                  <button type="button" class="admin-edit-btn danger btn-delete-contact">删除</button>
                 </div>
               </div>
             </div>
@@ -3932,7 +3932,7 @@
             <div class="sidebar-widget-title">给我留言</div>
             <div class="msg-input-area">
               <textarea id="msgInput" placeholder="说点什么吧..."></textarea>
-              <button class="btn-send-msg" id="btnSendMsg">发送留言</button>
+              <button type="button" class="btn-send-msg" id="btnSendMsg">发送留言</button>
             </div>
             <div class="msg-list" id="msgList">
               <div class="msg-empty">还没有留言，来做第一个留言的人吧</div>
@@ -4617,18 +4617,19 @@ function showModal(title, bodyHtml, onOk, opts) {
       overlay.className = 'modal-overlay';
       overlay.innerHTML = '<div class="modal-card' + (opts.wide ? ' wide' : '') + (opts.fullscreen ? ' fullscreen' : '') + '"><h3>' + title + '</h3><div class="modal-body">' + bodyHtml + '</div></div>';
       document.body.appendChild(overlay);
-      requestAnimationFrame(function(){ overlay.classList.add('show'); });
+      overlay.classList.add('show');
 
       var card = overlay.querySelector('.modal-card');
 
       // Click overlay to close
       overlay.addEventListener('click', function(e) {
-        if (e.target === overlay) { closeModal(overlay); }
+        if (e.target === overlay) { e.preventDefault(); closeModal(overlay); }
       });
 
       // Fullscreen toggle button
       if (opts.allowFullscreen || opts.wide) {
         var fsBtn = document.createElement('button');
+        fsBtn.type = 'button';
         fsBtn.className = 'btn-modal-fs';
         fsBtn.title = '全屏编辑';
         fsBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>';
@@ -4656,11 +4657,13 @@ function showModal(title, bodyHtml, onOk, opts) {
       footer.className = 'modal-footer';
 
       var cancelBtn = document.createElement('button');
+      cancelBtn.type = 'button';
       cancelBtn.className = 'btn-cancel';
       cancelBtn.textContent = '取消';
       cancelBtn.onclick = function(){ closeModal(overlay); };
 
       var okBtn = document.createElement('button');
+      okBtn.type = 'button';
       okBtn.className = 'btn-ok';
       okBtn.textContent = opts.okText || '确认';
       okBtn.onclick = function(){
@@ -4673,6 +4676,7 @@ function showModal(title, bodyHtml, onOk, opts) {
 
       if (opts.showDelete) {
         var delBtn = document.createElement('button');
+        delBtn.type = 'button';
         delBtn.className = 'btn-danger';
         delBtn.textContent = opts.deleteText || '删除';
         delBtn.onclick = function(){
@@ -4741,12 +4745,15 @@ function cropImage(src, callback, targetRatio) {
   var actions = document.createElement('div');
   actions.className = 'crop-actions';
   var confirmBtn = document.createElement('button');
+  confirmBtn.type = 'button';
   confirmBtn.className = 'btn-crop-confirm';
   confirmBtn.textContent = '确认裁切';
   var skipBtn = document.createElement('button');
+  skipBtn.type = 'button';
   skipBtn.className = 'btn-crop-skip';
   skipBtn.textContent = '跳过裁切';
   var cancelBtn = document.createElement('button');
+  cancelBtn.type = 'button';
   cancelBtn.className = 'btn-crop-cancel';
   cancelBtn.textContent = '取消';
   actions.appendChild(confirmBtn);
@@ -5175,8 +5182,8 @@ function renderMessages() {
         html += '<div class="msg-author">' + msg.name + ' &middot; ' + msg.time + '</div>';
         html += '<div>' + msg.text + '</div>';
         html += '<span class="msg-admin-actions admin-only" style="margin-left:auto;gap:4px;display:none;">';
-        html += '<button class="admin-edit-btn btn-pin-msg" data-idx="' + realIdx + '" style="font-size:11px;padding:1px 6px;" title="' + (msg.pinned ? '取消置顶' : '置顶') + '">' + (msg.pinned ? '取消置顶' : '置顶') + '</button>';
-        html += '<button class="admin-edit-btn danger btn-del-msg" data-idx="' + realIdx + '" style="font-size:11px;padding:1px 6px;" title="删除">删除</button>';
+        html += '<button type="button" class="admin-edit-btn btn-pin-msg" data-idx="' + realIdx + '" style="font-size:11px;padding:1px 6px;" title="' + (msg.pinned ? '取消置顶' : '置顶') + '">' + (msg.pinned ? '取消置顶' : '置顶') + '</button>';
+        html += '<button type="button" class="admin-edit-btn danger btn-del-msg" data-idx="' + realIdx + '" style="font-size:11px;padding:1px 6px;" title="删除">删除</button>';
         html += '</span></div>';
       });
       list.innerHTML = html;
@@ -5239,6 +5246,7 @@ function rebuildDots() {
       dotsContainer.innerHTML = '';
       slides.forEach(function(_, i){
         var dot = document.createElement('button');
+        dot.type = 'button';
         dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
         dot.onclick = function(){ goToSlide(i); };
         dotsContainer.appendChild(dot);
@@ -5366,8 +5374,8 @@ function bindDynamicEditBtns() {
             editArea.className = 'dynamic-edit-area';
             editArea.innerHTML = '<textarea class="dynamic-edit-textarea">' + currentText + '</textarea>' +
               '<div class="dynamic-edit-actions">' +
-                '<button class="dynamic-edit-cancel-btn">取消</button>' +
-                '<button class="dynamic-edit-save">保存</button>' +
+                '<button type="button" class="dynamic-edit-cancel-btn">取消</button>' +
+                '<button type="button" class="dynamic-edit-save">保存</button>' +
               '</div>';
             textEl.style.display = 'none';
             textEl.parentNode.insertBefore(editArea, textEl.nextSibling);
@@ -5416,19 +5424,19 @@ function createDynamicHTML(text, isPinned, timeText, avatarSrc, images) {
           '<div class="dynamic-text">' + text + '</div>' +
           imagesHtml +
           '<div class="dynamic-actions">' +
-            '<button class="action-btn like-btn" onclick="toggleLike(this)">' +
+            '<button type="button" class="action-btn like-btn" onclick="toggleLike(this)">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>' +
               ' 0' +
             '</button>' +
-            '<button class="action-btn">' +
+            '<button type="button" class="action-btn">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>' +
               ' 0' +
             '</button>' +
           '</div>' +
           '<div class="dynamic-admin-actions">' +
-            '<button class="admin-edit-btn ' + pinBtnClass + '">' + pinBtnText + '</button>' +
-            '<button class="admin-edit-btn btn-edit-dynamic">编辑</button>' +
-            '<button class="admin-edit-btn danger btn-delete-dynamic">删除</button>' +
+            '<button type="button" class="admin-edit-btn ' + pinBtnClass + '">' + pinBtnText + '</button>' +
+            '<button type="button" class="admin-edit-btn btn-edit-dynamic">编辑</button>' +
+            '<button type="button" class="admin-edit-btn danger btn-delete-dynamic">删除</button>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -5439,7 +5447,7 @@ function renderImagePreview() {
         (function(idx) {
           var item = document.createElement('div');
           item.className = 'preview-item';
-          item.innerHTML = '<img src="' + pendingImages[idx] + '"><button class="remove-img">&times;</button>';
+          item.innerHTML = '<img src="' + pendingImages[idx] + '"><button type="button" class="remove-img">&times;</button>';
           item.querySelector('.remove-img').addEventListener('click', function() {
             pendingImages.splice(idx, 1);
             renderImagePreview();
@@ -5454,9 +5462,9 @@ function bindBannerEditBtns() {
         var actions = document.createElement('div');
         actions.className = 'slide-admin-actions';
         actions.innerHTML =
-          '<button class="admin-edit-btn btn-edit-slide" style="background:rgba(255,255,255,0.9);">编辑</button>' +
-          '<button class="admin-edit-btn btn-hide-slide" style="background:rgba(255,255,255,0.9);">隐藏</button>' +
-          '<button class="admin-edit-btn danger btn-delete-slide" style="background:rgba(255,255,255,0.9);">删除</button>';
+          '<button type="button" class="admin-edit-btn btn-edit-slide" style="background:rgba(255,255,255,0.9);">编辑</button>' +
+          '<button type="button" class="admin-edit-btn btn-hide-slide" style="background:rgba(255,255,255,0.9);">隐藏</button>' +
+          '<button type="button" class="admin-edit-btn danger btn-delete-slide" style="background:rgba(255,255,255,0.9);">删除</button>';
         slide.appendChild(actions);
 
         actions.querySelector('.btn-edit-slide').addEventListener('click', function(e) {
@@ -5551,9 +5559,9 @@ function bindBannerEditBtns() {
                 var actions = document.createElement('div');
                 actions.className = 'slide-admin-actions';
                 actions.innerHTML =
-                  '<button class="admin-edit-btn btn-edit-slide" style="background:rgba(255,255,255,0.9);">编辑</button>' +
-                  '<button class="admin-edit-btn btn-hide-slide" style="background:rgba(255,255,255,0.9);">隐藏</button>' +
-                  '<button class="admin-edit-btn danger btn-delete-slide" style="background:rgba(255,255,255,0.9);">删除</button>';
+                  '<button type="button" class="admin-edit-btn btn-edit-slide" style="background:rgba(255,255,255,0.9);">编辑</button>' +
+                  '<button type="button" class="admin-edit-btn btn-hide-slide" style="background:rgba(255,255,255,0.9);">隐藏</button>' +
+                  '<button type="button" class="admin-edit-btn danger btn-delete-slide" style="background:rgba(255,255,255,0.9);">删除</button>';
                 slide.appendChild(actions);
 
                 actions.querySelector('.btn-edit-slide').addEventListener('click', function(e) {
@@ -6301,11 +6309,11 @@ function bindBannerEditBtns() {
       html += '</div>';
       html += '<div class="detail-tags" id="detailTags">' + tagsHtml + '</div>';
       html += '<div class="detail-desc" id="detailDesc">' + r.desc + '</div>';
-      html += '<button class="detail-cta" onclick="handleGetResource(' + r.id + ')">获取资源</button>';
+      html += '<button type="button" class="detail-cta" onclick="handleGetResource(' + r.id + ')">获取资源</button>';
       html += '</div>';
       html += '</div>';
       html += '<div class="detail-admin-bar">';
-      html += '<button class="admin-edit-btn" id="btnEditDetail">编辑资源</button>';
+      html += '<button type="button" class="admin-edit-btn" id="btnEditDetail">编辑资源</button>';
       html += '</div>';
       html += '</div>';
 
@@ -7070,11 +7078,11 @@ function bindBannerEditBtns() {
       html += '</div>';
       html += '<div class="detail-tags" id="detailTags">' + tagsHtml + '</div>';
       html += '<div class="detail-desc" id="detailDesc">' + r.desc + '</div>';
-      html += '<button class="detail-cta" onclick="handleGetResource(' + r.id + ')">获取资源</button>';
+      html += '<button type="button" class="detail-cta" onclick="handleGetResource(' + r.id + ')">获取资源</button>';
       html += '</div>';
       html += '</div>';
       html += '<div class="detail-admin-bar">';
-      html += '<button class="admin-edit-btn" id="btnEditDetail">编辑资源</button>';
+      html += '<button type="button" class="admin-edit-btn" id="btnEditDetail">编辑资源</button>';
       html += '</div>';
       html += '</div>';
 
@@ -7768,11 +7776,11 @@ function bindBannerEditBtns() {
       html += '</div>';
       html += '<div class="detail-tags" id="detailTags">' + tagsHtml + '</div>';
       html += '<div class="detail-desc" id="detailDesc">' + r.desc + '</div>';
-      html += '<button class="detail-cta" onclick="handleGetResource(' + r.id + ')">获取资源</button>';
+      html += '<button type="button" class="detail-cta" onclick="handleGetResource(' + r.id + ')">获取资源</button>';
       html += '</div>';
       html += '</div>';
       html += '<div class="detail-admin-bar">';
-      html += '<button class="admin-edit-btn" id="btnEditDetail">编辑资源</button>';
+      html += '<button type="button" class="admin-edit-btn" id="btnEditDetail">编辑资源</button>';
       html += '</div>';
       html += '</div>';
 
@@ -8441,11 +8449,11 @@ function bindBannerEditBtns() {
       html += '</div>';
       html += '<div class="detail-tags" id="detailTags">' + tagsHtml + '</div>';
       html += '<div class="detail-desc" id="detailDesc">' + r.desc + '</div>';
-      html += '<button class="detail-cta" onclick="handleGetResource(' + r.id + ')">获取资源</button>';
+      html += '<button type="button" class="detail-cta" onclick="handleGetResource(' + r.id + ')">获取资源</button>';
       html += '</div>';
       html += '</div>';
       html += '<div class="detail-admin-bar">';
-      html += '<button class="admin-edit-btn" id="btnEditDetail">编辑资源</button>';
+      html += '<button type="button" class="admin-edit-btn" id="btnEditDetail">编辑资源</button>';
       html += '</div>';
       html += '</div>';
 
@@ -9235,11 +9243,11 @@ function bindBannerEditBtns() {
       html += '</div>';
       html += '<div class="detail-tags" id="detailTags">' + tagsHtml + '</div>';
       html += '<div class="detail-desc" id="detailDesc">' + r.desc + '</div>';
-      html += '<button class="detail-cta" onclick="handleGetResource(' + r.id + ')">获取资源</button>';
+      html += '<button type="button" class="detail-cta" onclick="handleGetResource(' + r.id + ')">获取资源</button>';
       html += '</div>';
       html += '</div>';
       html += '<div class="detail-admin-bar">';
-      html += '<button class="admin-edit-btn" id="btnEditDetail">编辑资源</button>';
+      html += '<button type="button" class="admin-edit-btn" id="btnEditDetail">编辑资源</button>';
       html += '</div>';
       html += '</div>';
 
@@ -9774,9 +9782,9 @@ function renderNewsList() {
         var tagsHtml = a.tags.map(function(t){ return '<span class="news-card-tag">' + t + '</span>'; }).join('');
         html += '<a class="news-card ' + hiddenClass + '" data-cat="' + a.cat + '" data-sub-cat="' + a.subCat + '" data-id="' + a.id + '" href="article-detail.html?id=' + a.id + '">' +
           '<div class="news-card-admin-actions">' +
-            '<button class="admin-edit-btn btn-hide-news" onclick="event.preventDefault();">' + (a.hidden ? '显示' : '隐藏') + '</button>' +
-            '<button class="admin-edit-btn btn-edit-news" onclick="event.preventDefault();">编辑</button>' +
-            '<button class="admin-edit-btn danger btn-delete-news" onclick="event.preventDefault();">删除</button>' +
+            '<button type="button" class="admin-edit-btn btn-hide-news" onclick="event.preventDefault();">' + (a.hidden ? '显示' : '隐藏') + '</button>' +
+            '<button type="button" class="admin-edit-btn btn-edit-news" onclick="event.preventDefault();">编辑</button>' +
+            '<button type="button" class="admin-edit-btn danger btn-delete-news" onclick="event.preventDefault();">删除</button>' +
           '</div>' +
           '<div class="news-card-img-wrap">' +
             '<img src="' + coverThumb + '" alt="">' +
@@ -10098,9 +10106,9 @@ function renderNewsList() {
         var featCat = (a.featuredCat || []).join(' ');
         html += '<a class="article-card" data-cat="' + featCat + '" data-id="' + a.id + '" href="javascript:void(0)" onclick="loadArticleDetail(' + a.id + ');switchPage(\'article-detail\')">' +
           '<div class="article-card-admin-actions">' +
-            '<button class="admin-edit-btn btn-hide-article" onclick="event.preventDefault();">隐藏文章</button>' +
-            '<button class="admin-edit-btn btn-remove-featured" onclick="event.preventDefault();">从精选移除</button>' +
-            '<button class="admin-edit-btn danger btn-delete-article" onclick="event.preventDefault();">删除文章</button>' +
+            '<button type="button" class="admin-edit-btn btn-hide-article" onclick="event.preventDefault();">隐藏文章</button>' +
+            '<button type="button" class="admin-edit-btn btn-remove-featured" onclick="event.preventDefault();">从精选移除</button>' +
+            '<button type="button" class="admin-edit-btn danger btn-delete-article" onclick="event.preventDefault();">删除文章</button>' +
           '</div>' +
           '<img src="' + coverThumb + '" alt="' + a.title.replace(/"/g, '&quot;') + '" class="article-card-img">' +
           '<div class="article-card-body">' +
@@ -10113,11 +10121,11 @@ function renderNewsList() {
               '<div class="article-tags">' + tagsHtml + '</div>' +
             '</div>' +
             '<div class="article-actions">' +
-              '<button class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">' +
+              '<button type="button" class="action-btn like-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleLike(this)">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>' +
                 (a.likes || 0) +
               '</button>' +
-              '<button class="action-btn" onclick="event.preventDefault();">' +
+              '<button type="button" class="action-btn" onclick="event.preventDefault();">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>' +
                 '收藏' +
               '</button>' +
@@ -10269,13 +10277,13 @@ function renderResources() {
             '<span class="resource-badge-type">' + (r.type || '普通') + '</span>' +
           '</div>' +
           '<div class="resource-card-admin-actions">' +
-            '<button class="admin-icon-btn btn-edit-resource" title="编辑">' +
+            '<button type="button" class="admin-icon-btn btn-edit-resource" title="编辑">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>' +
             '</button>' +
-            '<button class="admin-icon-btn danger btn-delete-resource" title="删除">' +
+            '<button type="button" class="admin-icon-btn danger btn-delete-resource" title="删除">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>' +
             '</button>' +
-            '<button class="admin-icon-btn btn-hide-resource" title="' + (r.hidden ? '显示' : '隐藏') + '">' +
+            '<button type="button" class="admin-icon-btn btn-hide-resource" title="' + (r.hidden ? '显示' : '隐藏') + '">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>' +
             '</button>' +
           '</div>' +
@@ -10589,11 +10597,11 @@ function renderResources() {
       html += '</div>';
       html += '<div class="detail-tags" id="detailTags">' + tagsHtml + '</div>';
       html += '<div class="detail-desc" id="detailDesc">' + r.desc + '</div>';
-      html += '<button class="detail-cta" onclick="showToast(\'请联系客服购买此资源\')">获取资源</button>';
+      html += '<button type="button" class="detail-cta" onclick="showToast(\'请联系客服购买此资源\')">获取资源</button>';
       html += '</div>';
       html += '</div>';
       html += '<div class="detail-admin-bar">';
-      html += '<button class="admin-edit-btn" id="btnEditDetail">编辑资源</button>';
+      html += '<button type="button" class="admin-edit-btn" id="btnEditDetail">编辑资源</button>';
       html += '</div>';
       html += '</div>';
 
@@ -10651,7 +10659,7 @@ function showAlbumList() {
         html += '<option value="' + a.name + '">' + a.name + '</option>';
       });
       html += '</select>';
-      html += '<button class="btn-add-category admin-edit-btn" style="margin-left:auto;">+ 添加分类</button></div>';
+      html += '<button type="button" class="btn-add-category admin-edit-btn" style="margin-left:auto;">+ 添加分类</button></div>';
 
       html += '<div class="album-category-grid">';
 
@@ -10665,13 +10673,13 @@ function showAlbumList() {
             '<p>' + album.subAlbums.length + ' 个子相册</p>' +
           '</div>' +
           '<div class="album-category-card-admin-actions">' +
-            '<button class="admin-icon-btn btn-edit-album" title="编辑">' +
+            '<button type="button" class="admin-icon-btn btn-edit-album" title="编辑">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>' +
             '</button>' +
-            '<button class="admin-icon-btn danger btn-delete-album" title="删除">' +
+            '<button type="button" class="admin-icon-btn danger btn-delete-album" title="删除">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>' +
             '</button>' +
-            '<button class="admin-icon-btn btn-hide-album" title="' + hideTitle + '">' +
+            '<button type="button" class="admin-icon-btn btn-hide-album" title="' + hideTitle + '">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>' +
             '</button>' +
           '</div>' +
@@ -10827,18 +10835,18 @@ function showGallery(albumId, subId) {
 
       var container = document.getElementById('albumContent');
       var html = '<a href="album.html?album=' + albumId + '" class="btn-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg> 返回 ' + album.name + '</a>';
-      html += '<div class="album-title-bar"><h2>' + album.name + ' / ' + sub.name + '</h2><button class="admin-edit-btn btn-upload-photos" style="margin-left:auto;">上传照片</button></div>';
+      html += '<div class="album-title-bar"><h2>' + album.name + ' / ' + sub.name + '</h2><button type="button" class="admin-edit-btn btn-upload-photos" style="margin-left:auto;">上传照片</button></div>';
       html += '<div class="qq-gallery" id="qqGallery">';
       html += '<div class="qq-gallery-main" id="qqMainImg">' +
         '<img src="' + (currentPhotos[0] || '') + '" alt="大图预览" id="qqMainImgEl">' +
-        '<button class="gallery-arrow gallery-arrow-left" title="上一张"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg></button>' +
-        '<button class="gallery-arrow gallery-arrow-right" title="下一张"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 6 15 12 9 18"></polyline></svg>' +
+        '<button type="button" class="gallery-arrow gallery-arrow-left" title="上一张"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg></button>' +
+        '<button type="button" class="gallery-arrow gallery-arrow-right" title="下一张"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 6 15 12 9 18"></polyline></svg>' +
         '</button></div>';
       html += '<div class="qq-gallery-thumbs" id="qqThumbs">';
       currentPhotos.forEach(function(photo, idx) {
         html += '<div class="qq-gallery-thumb' + (idx === 0 ? ' active' : '') + '" data-idx="' + idx + '" style="position:relative;">' +
           '<img src="' + photo + '" alt="缩略图" loading="lazy">' +
-          '<button class="admin-edit-btn btn-delete-photo" style="position:absolute;top:2px;right:2px;padding:2px 6px;font-size:12px;line-height:1;">×</button>' +
+          '<button type="button" class="admin-edit-btn btn-delete-photo" style="position:absolute;top:2px;right:2px;padding:2px 6px;font-size:12px;line-height:1;">×</button>' +
           '</div>';
       });
       html += '</div>';
@@ -10919,7 +10927,7 @@ function showSubAlbums(albumId) {
 
       var container = document.getElementById('albumContent');
       var html = '<a href="javascript:void(0)" class="btn-back" id="btnBackToAlbums"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg> 返回相册中心</a>';
-      html += '<div class="album-title-bar"><h2>' + album.name + '</h2><button class="btn-add-category admin-edit-btn" style="margin-left:auto;">+ 添加相册</button></div>';
+      html += '<div class="album-title-bar"><h2>' + album.name + '</h2><button type="button" class="btn-add-category admin-edit-btn" style="margin-left:auto;">+ 添加相册</button></div>';
       html += '<div class="sub-album-grid">';
 
       album.subAlbums.forEach(function(sub) {
@@ -10933,13 +10941,13 @@ function showSubAlbums(albumId) {
             '<p>' + sub.photos.length + ' 张照片</p>' +
           '</div>' +
           '<div class="sub-album-card-new-admin-actions">' +
-            '<button class="admin-icon-btn btn-edit-sub-album" title="编辑">' +
+            '<button type="button" class="admin-icon-btn btn-edit-sub-album" title="编辑">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>' +
             '</button>' +
-            '<button class="admin-icon-btn danger btn-delete-sub-album" title="删除">' +
+            '<button type="button" class="admin-icon-btn danger btn-delete-sub-album" title="删除">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>' +
             '</button>' +
-            '<button class="admin-icon-btn btn-hide-sub-album" title="' + hideTitle + '">' +
+            '<button type="button" class="admin-icon-btn btn-hide-sub-album" title="' + hideTitle + '">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>' +
             '</button>' +
           '</div>' +
@@ -11593,7 +11601,7 @@ function renderArticle(id) {
       var html = '<div class="article-detail-card">' +
         '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">' +
           '<h1 class="article-detail-title" style="flex:1;">' + a.title + '</h1>' +
-          '<button class="admin-edit-btn" id="btnEditArticleDetail" style="margin-top:4px;">编辑文章</button>' +
+          '<button type="button" class="admin-edit-btn" id="btnEditArticleDetail" style="margin-top:4px;">编辑文章</button>' +
         '</div>' +
         '<div class="article-detail-meta">' +
           '<span>' + a.date + '</span><span>&middot;</span><span>' + a.reads + ' 阅读</span>' +
@@ -11606,15 +11614,15 @@ function renderArticle(id) {
       '</div>';
 
       html += '<div class="article-detail-actions">' +
-        '<button class="detail-action-btn like-btn" id="detailLikeBtn" onclick="toggleDetailLike()">' +
+        '<button type="button" class="detail-action-btn like-btn" id="detailLikeBtn" onclick="toggleDetailLike()">' +
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>' +
           ' 点赞' +
         '</button>' +
-        '<button class="detail-action-btn" id="detailFavBtn" onclick="toggleDetailFav()">' +
+        '<button type="button" class="detail-action-btn" id="detailFavBtn" onclick="toggleDetailFav()">' +
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>' +
           ' 收藏' +
         '</button>' +
-        '<button class="detail-action-btn" onclick="showToast(\'链接已复制到剪贴板\')">' +
+        '<button type="button" class="detail-action-btn" onclick="showToast(\'链接已复制到剪贴板\')">' +
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>' +
           ' 分享' +
         '</button>' +
@@ -12311,15 +12319,15 @@ document.getElementById('btnCloudSync').addEventListener('click', function() {
     + '<input id="fb_appId" type="text" value="' + (currentConfig.appId || '') + '" style="width:100%;padding:6px 10px;border:1px solid #d9d9d9;border-radius:6px;font-size:13px;" placeholder="App ID">'
     + '</div>'
     + '<div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">'
-    + '<button id="fbSaveBtn" style="flex:1;min-width:80px;padding:8px 16px;background:#000;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;">保存配置</button>'
-    + '<button id="fbTestBtn" style="flex:1;min-width:80px;padding:8px 16px;background:#262626;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;">测试连接</button>'
-    + '<button id="fbSyncNowBtn" style="flex:1;min-width:80px;padding:8px 16px;background:#E63946;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;">立即同步</button>'
+    + '<button type="button" id="fbSaveBtn" style="flex:1;min-width:80px;padding:8px 16px;background:#000;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;">保存配置</button>'
+    + '<button type="button" id="fbTestBtn" style="flex:1;min-width:80px;padding:8px 16px;background:#262626;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;">测试连接</button>'
+    + '<button type="button" id="fbSyncNowBtn" style="flex:1;min-width:80px;padding:8px 16px;background:#E63946;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;">立即同步</button>'
     + '</div>'
     + '<div id="fbStatusMsg" style="margin-top:12px;font-size:12px;color:#666;"></div>';
 
   var overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
-  overlay.innerHTML = '<div class="modal-card wide"><h3>云端同步配置 (Firebase)</h3><div class="modal-body">' + bodyHtml + '</div><button class="btn-modal-close" style="margin-top:12px;padding:6px 16px;border:1px solid #d9d9d9;background:#fff;border-radius:6px;cursor:pointer;font-size:13px;">关闭</button></div>';
+  overlay.innerHTML = '<div class="modal-card wide"><h3>云端同步配置 (Firebase)</h3><div class="modal-body">' + bodyHtml + '</div><button type="button" class="btn-modal-close" style="margin-top:12px;padding:6px 16px;border:1px solid #d9d9d9;background:#fff;border-radius:6px;cursor:pointer;font-size:13px;">关闭</button></div>';
   document.body.appendChild(overlay);
   requestAnimationFrame(function(){ overlay.classList.add('show'); });
 
@@ -13311,7 +13319,7 @@ function bindContactEditBtns() {
               div.innerHTML =
                 '<div class="contact-widget-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>' +
                 '<div class="contact-widget-info"><div class="contact-widget-label">' + label + '</div><div class="contact-w-value">' + value + '</div></div>' +
-                '<div class="contact-admin-actions"><button class="admin-edit-btn btn-edit-contact">编辑</button><button class="admin-edit-btn btn-hide-contact">隐藏</button><button class="admin-edit-btn danger btn-delete-contact">删除</button></div>';
+                '<div class="contact-admin-actions"><button type="button" class="admin-edit-btn btn-edit-contact">编辑</button><button type="button" class="admin-edit-btn btn-hide-contact">隐藏</button><button type="button" class="admin-edit-btn danger btn-delete-contact">删除</button></div>';
               var visible = overlay.querySelector('#newContactVisible').classList.contains('active');
               if (!visible) div.classList.add('hidden-contact');
               container.appendChild(div);
@@ -13539,6 +13547,7 @@ function bindAboutEditBtns() {
       document.querySelectorAll('#page-about .story-card').forEach(function(card) {
         if (card.querySelector('.btn-edit-about')) return;
         var editBtn = document.createElement('button');
+        editBtn.type = 'button';
         editBtn.className = 'admin-edit-btn btn-edit-about';
         editBtn.textContent = '编辑';
         editBtn.style.marginTop = '12px';
@@ -13570,6 +13579,7 @@ function bindAboutEditBtns() {
       document.querySelectorAll('#page-about .value-card').forEach(function(card) {
         if (card.querySelector('.btn-edit-value')) return;
         var editBtn = document.createElement('button');
+        editBtn.type = 'button';
         editBtn.className = 'admin-edit-btn btn-edit-value';
         editBtn.textContent = '编辑';
         editBtn.style.marginTop = '8px';
@@ -13614,6 +13624,7 @@ function bindAboutEditBtns() {
       document.querySelectorAll('#page-about .contact-item').forEach(function(item) {
         if (item.querySelector('.btn-edit-contact-item')) return;
         var editBtn = document.createElement('button');
+        editBtn.type = 'button';
         editBtn.className = 'admin-edit-btn btn-edit-contact-item';
         editBtn.textContent = '编辑';
         editBtn.style.marginLeft = 'auto';
@@ -13700,13 +13711,13 @@ function loadResourceDetail(id) {
       html += '</div>';
       html += '<div class="detail-tags" id="detailTags">' + tagsHtml + '</div>';
       html += '<div class="detail-desc" id="detailDesc">' + r.desc + '</div>';
-      html += '<button class="detail-cta" onclick="handleGetResource(' + r.id + ')">获取资源</button>';
+      html += '<button type="button" class="detail-cta" onclick="handleGetResource(' + r.id + ')">获取资源</button>';
       html += '</div>';
       html += '</div>';
       html += '<div class="detail-admin-bar">';
-      html += '<button class="admin-edit-btn" id="btnEditDetail">编辑资源</button>';
-      html += '<button class="admin-edit-btn danger" id="btnDeleteDetail">删除资源</button>';
-      html += '<button class="admin-edit-btn" id="btnHideDetail">' + (r.hidden ? '显示资源' : '隐藏资源') + '</button>';
+      html += '<button type="button" class="admin-edit-btn" id="btnEditDetail">编辑资源</button>';
+      html += '<button type="button" class="admin-edit-btn danger" id="btnDeleteDetail">删除资源</button>';
+      html += '<button type="button" class="admin-edit-btn" id="btnHideDetail">' + (r.hidden ? '显示资源' : '隐藏资源') + '</button>';
       html += '</div>';
       html += '</div>';
 
