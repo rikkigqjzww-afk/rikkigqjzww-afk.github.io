@@ -4148,6 +4148,177 @@
 
 
     // ============================
+    // IndexedDB Image Storage (bypass localStorage 5MB limit)
+    // ============================
+var ImageStore = (function() {
+  var DB_NAME = 'aiyoushe_images';
+  var DB_VERSION = 1;
+  var STORE_NAME = 'images';
+  var db = null;
+
+  function openDB(callback) {
+    if (db) { callback(db); return; }
+    try {
+      var request = indexedDB.open(DB_NAME, DB_VERSION);
+      request.onupgradeneeded = function(e) {
+        var d = e.target.result;
+        if (!d.objectStoreNames.contains(STORE_NAME)) {
+          d.createObjectStore(STORE_NAME);
+        }
+      };
+      request.onsuccess = function(e) { db = e.target.result; callback(db); };
+      request.onerror = function() { callback(null); };
+    } catch(e) { callback(null); }
+  }
+
+  return {
+    save: function(key, base64, cb) {
+      openDB(function(d) {
+        if (!d) { if(cb) cb(false); return; }
+        try {
+          var tx = d.transaction(STORE_NAME, 'readwrite');
+          tx.objectStore(STORE_NAME).put(base64, key);
+          tx.oncomplete = function() { if(cb) cb(true); };
+          tx.onerror = function() { if(cb) cb(false); };
+        } catch(e) { if(cb) cb(false); }
+      });
+    },
+    get: function(key, cb) {
+      openDB(function(d) {
+        if (!d) { if(cb) cb(null); return; }
+        try {
+          var tx = d.transaction(STORE_NAME, 'readonly');
+          var req = tx.objectStore(STORE_NAME).get(key);
+          req.onsuccess = function() { if(cb) cb(req.result); };
+          req.onerror = function() { if(cb) cb(null); };
+        } catch(e) { if(cb) cb(null); }
+      });
+    },
+    remove: function(key, cb) {
+      openDB(function(d) {
+        if (!d) { if(cb) cb(false); return; }
+        try {
+          var tx = d.transaction(STORE_NAME, 'readwrite');
+          tx.objectStore(STORE_NAME).delete(key);
+          tx.oncomplete = function() { if(cb) cb(true); };
+          tx.onerror = function() { if(cb) cb(false); };
+        } catch(e) { if(cb) cb(false); }
+      });
+    },
+    clear: function(cb) {
+      openDB(function(d) {
+        if (!d) { if(cb) cb(false); return; }
+        try {
+          var tx = d.transaction(STORE_NAME, 'readwrite');
+          tx.objectStore(STORE_NAME).clear();
+          tx.oncomplete = function() { if(cb) cb(true); };
+          tx.onerror = function() { if(cb) cb(false); };
+        } catch(e) { if(cb) cb(false); }
+      });
+    },
+    getAllKeys: function(cb) {
+      openDB(function(d) {
+        if (!d) { if(cb) cb([]); return; }
+        try {
+          var tx = d.transaction(STORE_NAME, 'readonly');
+          var req = tx.objectStore(STORE_NAME).getAllKeys();
+          req.onsuccess = function() { if(cb) cb(req.result || []); };
+          req.onerror = function() { if(cb) cb([]); };
+        } catch(e) { if(cb) cb([]); }
+      });
+    },
+    getAll: function(cb) {
+      openDB(function(d) {
+        if (!d) { if(cb) cb({}); return; }
+        try {
+          var tx = d.transaction(STORE_NAME, 'readonly');
+          var req = tx.objectStore(STORE_NAME).getAll();
+          var keysReq = tx.objectStore(STORE_NAME).getAllKeys();
+          tx.oncomplete = function() {
+            var result = {};
+            var keys = keysReq.result || [];
+            var vals = req.result || [];
+            for (var i = 0; i < keys.length; i++) { result[keys[i]] = vals[i]; }
+            if(cb) cb(result);
+          };
+        } catch(e) { if(cb) cb({}); }
+      });
+    }
+  };
+})();
+
+// Helper: extract base64 images from data object and store them in IndexedDB
+function extractAndStoreImages(data, prefix) {
+  var imageFields = {};
+  function scan(obj, path) {
+    if (!obj || typeof obj !== 'object') return;
+    if (Array.isArray(obj)) {
+      for (var i = 0; i < obj.length; i++) scan(obj[i], path + '[' + i + ']');
+      return;
+    }
+    for (var key in obj) {
+      var val = obj[key];
+      if (typeof val === 'string' && val.length > 5000 && val.indexOf('data:image') === 0) {
+        var imgKey = prefix + path + '.' + key;
+        imageFields[imgKey] = val;
+        // Replace with a reference marker
+        obj[key] = '__IMGSTORE__' + imgKey;
+      } else if (typeof val === 'object') {
+        scan(val, path + '.' + key);
+      }
+    }
+  }
+  scan(data, '');
+  var keys = Object.keys(imageFields);
+  var saved = 0;
+  if (keys.length === 0) return { count: 0, data: data };
+  keys.forEach(function(k) {
+    ImageStore.save(k, imageFields[k], function(ok) {
+      saved++;
+      if (saved === keys.length) {
+        return; // all done
+      }
+    });
+  });
+  return { count: keys.length, data: data };
+}
+
+// Helper: restore base64 images from IndexedDB into data object (async)
+function restoreImagesFromStore(data, callback) {
+  var refs = [];
+  function scan(obj, path) {
+    if (!obj || typeof obj !== 'object') return;
+    if (Array.isArray(obj)) {
+      for (var i = 0; i < obj.length; i++) scan(obj[i], path + '[' + i + ']');
+      return;
+    }
+    for (var key in obj) {
+      var val = obj[key];
+      if (typeof val === 'string' && val.indexOf('__IMGSTORE__') === 0) {
+        var imgKey = val.replace('__IMGSTORE__', '');
+        refs.push({ path: path + '.' + key, key: key, parent: obj, imgKey: imgKey });
+      } else if (typeof val === 'object') {
+        scan(val, path + '.' + key);
+      }
+    }
+  }
+  scan(data, '');
+  if (refs.length === 0) { callback(data); return; }
+  var done = 0;
+  refs.forEach(function(ref) {
+    ImageStore.get(ref.imgKey, function(base64) {
+      if (base64) {
+        ref.parent[ref.key] = base64;
+      } else {
+        ref.parent[ref.key] = '';
+      }
+      done++;
+      if (done === refs.length) callback(data);
+    });
+  });
+}
+
+    // ============================
     // SHARED UTILITY FUNCTIONS
     // ============================
 function showToast(msg) {
@@ -11472,6 +11643,14 @@ function toggleDetailLike() {
       // Ignore parse errors, fall back to defaults
     }
 
+    // Restore images from IndexedDB before rendering (async)
+    restoreImagesFromStore(articles, function(articlesRestored) {
+      articles = articlesRestored;
+      restoreImagesFromStore(resourceData, function(resourcesRestored) {
+        resourceData = resourcesRestored;
+        restoreImagesFromStore(albumData, function(albumsRestored) {
+          albumData = albumsRestored;
+
     // ===== Restore DOM-based editable content =====
 
     // Restore carousel
@@ -11643,6 +11822,11 @@ function toggleDetailLike() {
     renderFeaturedResources();
     renderResources();
     showAlbumList();
+
+    // 初始化完成后，立即将所有数据保存到localStorage
+    // 这样后续刷新时才能正确恢复
+    syncDataToStorage();
+        }); }); });
 
     // Mobile sidebar toggle
     var hamburgerBtn = document.getElementById('hamburgerBtn');
@@ -12179,15 +12363,14 @@ function saveCarouselToStorage() {
       var titleEl = slide.querySelector('.slide-overlay h2');
       var link = slide.querySelector('a.slide-link');
       var hidden = (slide.style.opacity === '0.4');
-      slides.push({
-        img: img ? img.src : '',
-        title: titleEl ? titleEl.textContent : '',
-        link: link ? link.getAttribute('href') : '',
-        hidden: hidden
-      });
+      var imgSrc = img ? img.src : '';
+      slides.push({ img: imgSrc, title: titleEl ? titleEl.textContent : '', link: link ? link.getAttribute('href') : '', hidden: hidden });
     });
     carouselSlides = slides;
-    localStorage.setItem('aiyoushe_carousel', JSON.stringify(slides));
+    // Extract large images to IndexedDB
+    var slidesClone = JSON.parse(JSON.stringify(slides));
+    extractAndStoreImages(slidesClone, 'carousel');
+    localStorage.setItem('aiyoushe_carousel', JSON.stringify(slidesClone));
   } catch(e) {}
 }
 function loadCarouselFromStorage() {
@@ -12196,11 +12379,13 @@ function loadCarouselFromStorage() {
   try {
     var slides = JSON.parse(saved);
     if (!slides || !slides.length) return false;
-    var track = document.getElementById('carouselTrack');
-    if (!track) return false;
-    // Clear existing slides
-    track.innerHTML = '';
-    slides.forEach(function(s, idx) {
+    // Restore images from IndexedDB if they were stored there
+    restoreImagesFromStore(slides, function(slidesRestored) {
+      slides = slidesRestored;
+      var track = document.getElementById('carouselTrack');
+      if (!track) return;
+      track.innerHTML = '';
+      slides.forEach(function(s, idx) {
       var slide = document.createElement('div');
       slide.className = 'carousel-slide';
       if (s.hidden) {
@@ -12225,14 +12410,23 @@ function loadCarouselFromStorage() {
     updateCarousel();
     carouselSlides = slides;
     return true;
+    }); // end restoreImagesFromStore
   } catch(e) { return false; }
 }
 
 function syncDataToStorage() {
   try {
-    localStorage.setItem('aiyoushe_articles', JSON.stringify(articles));
-    localStorage.setItem('aiyoushe_resources', JSON.stringify(resourceData));
-    localStorage.setItem('aiyoushe_albums', JSON.stringify(albumData));
+    // Save data arrays - extract large base64 images to IndexedDB first
+    var articlesClone = JSON.parse(JSON.stringify(articles));
+    extractAndStoreImages(articlesClone, 'articles');
+    var resourceClone = JSON.parse(JSON.stringify(resourceData));
+    extractAndStoreImages(resourceClone, 'resources');
+    var albumClone = JSON.parse(JSON.stringify(albumData));
+    extractAndStoreImages(albumClone, 'albums');
+
+    localStorage.setItem('aiyoushe_articles', JSON.stringify(articlesClone));
+    localStorage.setItem('aiyoushe_resources', JSON.stringify(resourceClone));
+    localStorage.setItem('aiyoushe_albums', JSON.stringify(albumClone));
     localStorage.setItem('aiyoushe_announcements', JSON.stringify(announcements));
     localStorage.setItem('aiyoushe_cats', JSON.stringify(articleCategories));
     localStorage.setItem('aiyoushe_tags', JSON.stringify(articleTags));
@@ -12359,24 +12553,29 @@ function syncDataToStorage() {
 
 function exportAllData() {
   syncDataToStorage();
-  var data = {};
-  DATA_KEYS.forEach(function(key) {
-    var val = localStorage.getItem(key);
-    if (val !== null) data[key] = val;
+  ImageStore.getAll(function(imgData) {
+    var data = {};
+    DATA_KEYS.forEach(function(key) {
+      var val = localStorage.getItem(key);
+      if (val !== null) data[key] = val;
+    });
+    // Include IndexedDB images in backup
+    if (Object.keys(imgData).length > 0) {
+      data._indexeddb_images = imgData;
+    }
+    data._backup_note = 'This backup contains all editable data. To fully restore your site, you also need the index.html file.';
+    var jsonStr = JSON.stringify(data);
+    var blob = new Blob([jsonStr], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'aiyoushe_backup_' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('数据备份已下载（' + Object.keys(data).length + ' 项，含 ' + Object.keys(imgData).length + ' 张图片）');
   });
-  // Also include html file backup flag
-  data._backup_note = 'This backup contains all editable data. To fully restore your site, you also need the index.html file.';
-  var jsonStr = JSON.stringify(data, null, 2);
-  var blob = new Blob([jsonStr], { type: 'application/json' });
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url;
-  a.download = 'aiyoushe_backup_' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '.json';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showToast('数据备份已下载（' + Object.keys(data).length + ' 项）');
 }
 
 function importAllData(jsonString) {
@@ -12389,6 +12588,17 @@ function importAllData(jsonString) {
         count++;
       }
     });
+    // Restore IndexedDB images if present
+    if (data._indexeddb_images) {
+      var imgs = data._indexeddb_images;
+      var imgKeys = Object.keys(imgs);
+      var imgSaved = 0;
+      imgKeys.forEach(function(k) {
+        ImageStore.save(k, imgs[k], function() {
+          imgSaved++;
+        });
+      });
+    }
     if (count > 0) {
       // Reload data from localStorage into memory variables
       articles = JSON.parse(localStorage.getItem('aiyoushe_articles')) || articles;
