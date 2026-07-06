@@ -2840,10 +2840,13 @@
 }
 
   </style>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script data-preview-injected src="https://lf3-static.bytednsdoc.com/obj/eden-cn/8011eh7nupenuvonuhd/previewer-tools.de3cd6a1.umd.js"></script><script data-preview-injected src="https://lf3-static.bytednsdoc.com/obj/eden-cn/8011eh7nupenuvonuhd/previewer-tools.de3cd6a1.umd.js"></script></head>
 <body>
 
-  <div class="admin-banner" id="adminBanner">&#9999;&#65039; 编辑模式已开启 — 管理员已登录</div>
+  <div class="admin-banner" id="adminBanner">&#9999;&#65039; 编辑模式已开启 — 管理员已登录 <span style="margin-left:16px;"><button id="btnCloudSync" style="background:#E63946;color:#fff;border:none;padding:3px 12px;border-radius:12px;cursor:pointer;font-size:12px;">云端同步</button></span></div>
   <div class="toast-container" id="toastContainer"></div>
 
   <div class="mobile-overlay" id="mobileOverlay"></div>
@@ -4247,6 +4250,173 @@ var ImageStore = (function() {
   };
 })();
 
+// ============================
+// Firebase Cloud Sync
+// ============================
+var CloudSync = (function() {
+  var firebaseApp = null;
+  var db = null;
+  var connected = false;
+  var listenersActive = false;
+  var SYNC_PREFIX = 'aiyoushe_site_';
+  
+  // Firebase config - user needs to replace with their own
+  var FIREBASE_CONFIG = {
+    apiKey: "",
+    authDomain: "",
+    databaseURL: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: ""
+  };
+  
+  function init(callback) {
+    if (connected) { if (callback) callback(true); return; }
+    if (!firebase.database) {
+      if (callback) callback(false);
+      return;
+    }
+    try {
+      // Check if config has been filled in
+      if (!FIREBASE_CONFIG.apiKey || !FIREBASE_CONFIG.databaseURL) {
+        console.log('[CloudSync] Firebase not configured, using local storage only');
+        if (callback) callback(false);
+        return;
+      }
+      firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
+      db = firebase.database();
+      db.ref('.info/connected').on('value', function(snap) {
+        connected = snap.val() === true;
+      });
+      connected = true;
+      if (callback) callback(true);
+    } catch(e) {
+      console.log('[CloudSync] Init failed:', e.message);
+      if (callback) callback(false);
+    }
+  }
+  
+  function saveValue(key, value, callback) {
+    if (!db) { if (callback) callback(false); return; }
+    try {
+      db.ref(SYNC_PREFIX + key).set(value, function(error) {
+        if (callback) callback(!error);
+      });
+    } catch(e) { if (callback) callback(false); }
+  }
+  
+  function saveValueObj(key, obj, callback) {
+    if (!db) { if (callback) callback(false); return; }
+    try {
+      db.ref(SYNC_PREFIX + key).set(obj, function(error) {
+        if (callback) callback(!error);
+      });
+    } catch(e) { if (callback) callback(false); }
+  }
+  
+  function getValue(key, callback) {
+    if (!db) { if (callback) callback(null); return; }
+    try {
+      db.ref(SYNC_PREFIX + key).once('value', function(snap) {
+        callback(snap.val());
+      });
+    } catch(e) { if (callback) callback(null); }
+  }
+  
+  function listenValue(key, callback) {
+    if (!db) return;
+    try {
+      db.ref(SYNC_PREFIX + key).on('value', function(snap) {
+        callback(snap.val());
+      });
+    } catch(e) {}
+  }
+  
+  function saveImageBlob(key, base64, callback) {
+    if (!db) { if (callback) callback(false); return; }
+    try {
+      db.ref(SYNC_PREFIX + 'images/' + key).set(base64, function(error) {
+        if (callback) callback(!error);
+      });
+    } catch(e) { if (callback) callback(false); }
+  }
+  
+  function getImageBlob(key, callback) {
+    if (!db) { if (callback) callback(null); return; }
+    try {
+      db.ref(SYNC_PREFIX + 'images/' + key).once('value', function(snap) {
+        callback(snap.val());
+      });
+    } catch(e) { if (callback) callback(null); }
+  }
+  
+  function listenAll(callback) {
+    if (!db || listenersActive) return;
+    listenersActive = true;
+    var DATA_KEYS_LIST = [
+      'aiyoushe_articles', 'aiyoushe_resources', 'aiyoushe_albums',
+      'aiyoushe_announcements', 'aiyoushe_cats', 'aiyoushe_tags',
+      'aiyoushe_featcats', 'aiyoushe_carousel', 'aiyoushe_messages'
+    ];
+    DATA_KEYS_LIST.forEach(function(key) {
+      listenValue(key.replace('aiyoushe_', ''), function(val) {
+        if (val !== null) {
+          localStorage.setItem('aiyoushe_' + key, typeof val === 'string' ? val : JSON.stringify(val));
+        }
+      });
+    });
+    // Also listen for simple string values (announcements, contact_html, etc.)
+    var STRING_KEYS = [
+      'contact_html', 'pricing_html', 'benefits_html', 'profile_data',
+      'vip_banner_data', 'about_contact_data', 'story_data', 'value_data',
+      'faq_data', 'qr_code'
+    ];
+    STRING_KEYS.forEach(function(key) {
+      listenValue(key, function(val) {
+        if (val !== null) {
+          if (typeof val === 'object') {
+            localStorage.setItem('aiyoushe_' + key, JSON.stringify(val));
+          } else {
+            localStorage.setItem('aiyoushe_' + key, val);
+          }
+        }
+      });
+    });
+  }
+  
+  function isConfigured() {
+    return !!(FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.databaseURL);
+  }
+  
+  function getConfig() {
+    return FIREBASE_CONFIG;
+  }
+  
+  function setConfig(config) {
+    FIREBASE_CONFIG = config;
+  }
+  
+  function isConnected() {
+    return connected;
+  }
+  
+  return {
+    init: init,
+    saveValue: saveValue,
+    saveValueObj: saveValueObj,
+    getValue: getValue,
+    listenValue: listenValue,
+    saveImageBlob: saveImageBlob,
+    getImageBlob: getImageBlob,
+    listenAll: listenAll,
+    isConfigured: isConfigured,
+    getConfig: getConfig,
+    setConfig: setConfig,
+    isConnected: isConnected
+  };
+})();
+
 // Helper: extract base64 images from data object and store them in IndexedDB
 function extractAndStoreImages(data, prefix) {
   var imageFields = {};
@@ -4283,6 +4453,10 @@ function extractAndStoreImages(data, prefix) {
   if (keys.length === 0) return { count: 0, data: data };
   keys.forEach(function(k) {
     ImageStore.save(k, imageFields[k], function(ok) {
+      // Also sync to Firebase if configured (skip images > 500KB)
+      if (CloudSync.isConfigured() && imageFields[k].length < 512000) {
+        CloudSync.saveImageBlob(k, imageFields[k]);
+      }
       saved++;
       if (saved === keys.length) {
         return; // all done
@@ -4326,6 +4500,20 @@ function restoreImagesFromStore(data, callback) {
     ImageStore.get(ref.imgKey, function(base64) {
       if (base64) {
         ref.parent[ref.key] = base64;
+      } else if (CloudSync.isConfigured()) {
+        // Fallback: try loading from Firebase
+        CloudSync.getImageBlob(ref.imgKey, function(cloudBase64) {
+          if (cloudBase64) {
+            ref.parent[ref.key] = cloudBase64;
+            // Cache back to IndexedDB
+            ImageStore.save(ref.imgKey, cloudBase64);
+          } else {
+            ref.parent[ref.key] = '';
+          }
+          done++;
+          if (done === refs.length) callback(data);
+        });
+        return; // skip done++ for async callback
       } else {
         ref.parent[ref.key] = '';
       }
@@ -4350,6 +4538,10 @@ function extractImagesFromHTML(html, prefix, callback) {
     imageMap[b64] = '__IMGSTORE__:' + imgKey;
     idx++;
     ImageStore.save(imgKey, b64, function() {
+      // Also sync to Firebase if configured (skip images > 500KB)
+      if (CloudSync.isConfigured() && b64.length < 512000) {
+        CloudSync.saveImageBlob(imgKey, b64);
+      }
       saved++;
       if (saved === matches.length) {
         var result = html;
@@ -4383,6 +4575,19 @@ function restoreImagesInHTML(html, callback) {
     ImageStore.get(imgKey, function(base64) {
       if (base64) {
         result = result.split('__IMGSTORE__:' + imgKey).join(base64);
+      } else if (CloudSync.isConfigured()) {
+        // Fallback: try loading from Firebase
+        CloudSync.getImageBlob(imgKey, function(cloudBase64) {
+          if (cloudBase64) {
+            result = result.split('__IMGSTORE__:' + imgKey).join(cloudBase64);
+            ImageStore.save(imgKey, cloudBase64);
+          } else {
+            result = result.split('__IMGSTORE__:' + imgKey).join('');
+          }
+          done++;
+          if (done === markers.length) callback(result);
+        });
+        return; // skip done++ for async callback
       } else {
         result = result.split('__IMGSTORE__:' + imgKey).join('');
       }
@@ -11097,7 +11302,7 @@ function showQrModal() {
             '</div>' +
           '</div>' +
           '<div class="qr-modal-desc">扫描上方二维码添加客服，咨询购买事宜</div>' +
-          '<button class="qr-modal-close" id="btnCloseQrModal">关闭</button>' +
+          '<button type="button" class="qr-modal-close" id="btnCloseQrModal">关闭</button>' +
         '</div>' +
       '</div>';
       document.body.appendChild(overlay);
@@ -11167,6 +11372,7 @@ function showQrModal() {
         var uploadDiv = document.createElement('div');
         uploadDiv.style.cssText = 'margin-top:12px;text-align:center;';
         var uploadBtn = document.createElement('button');
+        uploadBtn.type = 'button';
         uploadBtn.className = 'admin-edit-btn';
         uploadBtn.textContent = '上传二维码图片';
         uploadBtn.addEventListener('click', function(e) {
@@ -11753,7 +11959,8 @@ function toggleDetailLike() {
     }
 
     // Restore images from IndexedDB before rendering (async)
-    restoreImagesFromStore(articles, function(articlesRestored) {
+    function finishInit() {
+      restoreImagesFromStore(articles, function(articlesRestored) {
       articles = articlesRestored;
       restoreImagesFromStore(resourceData, function(resourcesRestored) {
         resourceData = resourcesRestored;
@@ -11945,7 +12152,68 @@ function toggleDetailLike() {
     // 初始化完成后，立即将所有数据保存到localStorage
     // 这样后续刷新时才能正确恢复
     syncDataToStorage();
-        }); }); });
+
+    // Start Firebase real-time listeners after initialization
+    if (CloudSync.isConnected()) {
+      CloudSync.listenAll();
+    }
+
+          }); }); });
+    }
+
+    // Try to load from Firebase cloud first
+    var firebaseConfigStr = localStorage.getItem('aiyoushe_firebase_config');
+    if (firebaseConfigStr) {
+      try {
+        var fbConfig = JSON.parse(firebaseConfigStr);
+        CloudSync.setConfig(fbConfig);
+        CloudSync.init(function(ok) {
+          if (ok) {
+            // Load data from Firebase
+            var keysToLoad = ['articles', 'resources', 'albums', 'announcements', 'cats', 'tags', 'featcats', 'carousel', 'messages'];
+            var loaded = 0;
+            keysToLoad.forEach(function(key) {
+              CloudSync.getValue(key, function(val) {
+                if (val !== null) {
+                  var parsed = typeof val === 'string' ? val : JSON.stringify(val);
+                  localStorage.setItem('aiyoushe_' + key, parsed);
+                }
+                loaded++;
+                if (loaded === keysToLoad.length) {
+                  // Re-parse loaded data into memory
+                  try {
+                    var _sa = localStorage.getItem('aiyoushe_articles');
+                    if (_sa) articles = JSON.parse(_sa);
+                    var _sr = localStorage.getItem('aiyoushe_resources');
+                    if (_sr) resourceData = JSON.parse(_sr);
+                    var _sal = localStorage.getItem('aiyoushe_albums');
+                    if (_sal) albumData = JSON.parse(_sal);
+                    var _san = localStorage.getItem('aiyoushe_announcements');
+                    if (_san) announcements = JSON.parse(_san);
+                    var _sc = localStorage.getItem('aiyoushe_cats');
+                    if (_sc) articleCategories = JSON.parse(_sc);
+                    var _st = localStorage.getItem('aiyoushe_tags');
+                    if (_st) articleTags = JSON.parse(_st);
+                    var _sf = localStorage.getItem('aiyoushe_featcats');
+                    if (_sf) featuredCategories = JSON.parse(_sf);
+                    var _sm = localStorage.getItem('aiyoushe_messages');
+                    if (_sm) { try { messages = JSON.parse(_sm); } catch(e) {} }
+                  } catch(e) {}
+                  finishInit();
+                }
+              });
+            });
+            if (keysToLoad.length === 0) finishInit();
+          } else {
+            finishInit();
+          }
+        });
+      } catch(e) {
+        finishInit();
+      }
+    } else {
+      finishInit();
+    }
 
     // Mobile sidebar toggle
     var hamburgerBtn = document.getElementById('hamburgerBtn');
@@ -11996,7 +12264,7 @@ disableEditMode = function() {
 
 // Clone-replace buttons to remove ALL previously attached event listeners
 (function() {
-  var ids = ['btnAdmin', 'btnExitEdit', 'btnSendMsg', 'btnBackup', 'btnRestore'];
+  var ids = ['btnAdmin', 'btnExitEdit', 'btnSendMsg', 'btnBackup', 'btnRestore', 'btnCloudSync'];
   ids.forEach(function(id) {
     var old = document.getElementById(id);
     if (old) {
@@ -12005,6 +12273,123 @@ disableEditMode = function() {
     }
   });
 })();
+
+// Firebase Cloud Sync configuration modal
+document.getElementById('btnCloudSync').addEventListener('click', function() {
+  var currentConfig = CloudSync.getConfig();
+  var savedConfigStr = localStorage.getItem('aiyoushe_firebase_config');
+  if (savedConfigStr) {
+    try { currentConfig = JSON.parse(savedConfigStr); } catch(e) {}
+  }
+  var bodyHtml = ''
+    + '<div style="margin-bottom:12px;">'
+    + '<label style="display:block;font-weight:500;margin-bottom:4px;font-size:13px;">apiKey</label>'
+    + '<input id="fb_apiKey" type="text" value="' + (currentConfig.apiKey || '') + '" style="width:100%;padding:6px 10px;border:1px solid #d9d9d9;border-radius:6px;font-size:13px;" placeholder="你的 Firebase API Key">'
+    + '</div>'
+    + '<div style="margin-bottom:12px;">'
+    + '<label style="display:block;font-weight:500;margin-bottom:4px;font-size:13px;">authDomain</label>'
+    + '<input id="fb_authDomain" type="text" value="' + (currentConfig.authDomain || '') + '" style="width:100%;padding:6px 10px;border:1px solid #d9d9d9;border-radius:6px;font-size:13px;" placeholder="项目.firebaseapp.com">'
+    + '</div>'
+    + '<div style="margin-bottom:12px;">'
+    + '<label style="display:block;font-weight:500;margin-bottom:4px;font-size:13px;">databaseURL <span style="color:#E63946;">*</span></label>'
+    + '<input id="fb_databaseURL" type="text" value="' + (currentConfig.databaseURL || '') + '" style="width:100%;padding:6px 10px;border:1px solid #d9d9d9;border-radius:6px;font-size:13px;" placeholder="https://项目名-default-rtdb.firebaseio.com">'
+    + '</div>'
+    + '<div style="margin-bottom:12px;">'
+    + '<label style="display:block;font-weight:500;margin-bottom:4px;font-size:13px;">projectId</label>'
+    + '<input id="fb_projectId" type="text" value="' + (currentConfig.projectId || '') + '" style="width:100%;padding:6px 10px;border:1px solid #d9d9d9;border-radius:6px;font-size:13px;" placeholder="你的 Firebase 项目 ID">'
+    + '</div>'
+    + '<div style="margin-bottom:12px;">'
+    + '<label style="display:block;font-weight:500;margin-bottom:4px;font-size:13px;">storageBucket</label>'
+    + '<input id="fb_storageBucket" type="text" value="' + (currentConfig.storageBucket || '') + '" style="width:100%;padding:6px 10px;border:1px solid #d9d9d9;border-radius:6px;font-size:13px;" placeholder="项目.appspot.com">'
+    + '</div>'
+    + '<div style="margin-bottom:12px;">'
+    + '<label style="display:block;font-weight:500;margin-bottom:4px;font-size:13px;">messagingSenderId</label>'
+    + '<input id="fb_messagingSenderId" type="text" value="' + (currentConfig.messagingSenderId || '') + '" style="width:100%;padding:6px 10px;border:1px solid #d9d9d9;border-radius:6px;font-size:13px;" placeholder="发送者 ID">'
+    + '</div>'
+    + '<div style="margin-bottom:12px;">'
+    + '<label style="display:block;font-weight:500;margin-bottom:4px;font-size:13px;">appId</label>'
+    + '<input id="fb_appId" type="text" value="' + (currentConfig.appId || '') + '" style="width:100%;padding:6px 10px;border:1px solid #d9d9d9;border-radius:6px;font-size:13px;" placeholder="App ID">'
+    + '</div>'
+    + '<div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">'
+    + '<button id="fbSaveBtn" style="flex:1;min-width:80px;padding:8px 16px;background:#000;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;">保存配置</button>'
+    + '<button id="fbTestBtn" style="flex:1;min-width:80px;padding:8px 16px;background:#262626;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;">测试连接</button>'
+    + '<button id="fbSyncNowBtn" style="flex:1;min-width:80px;padding:8px 16px;background:#E63946;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;">立即同步</button>'
+    + '</div>'
+    + '<div id="fbStatusMsg" style="margin-top:12px;font-size:12px;color:#666;"></div>';
+
+  var overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = '<div class="modal-card wide"><h3>云端同步配置 (Firebase)</h3><div class="modal-body">' + bodyHtml + '</div><button class="btn-modal-close" style="margin-top:12px;padding:6px 16px;border:1px solid #d9d9d9;background:#fff;border-radius:6px;cursor:pointer;font-size:13px;">关闭</button></div>';
+  document.body.appendChild(overlay);
+  requestAnimationFrame(function(){ overlay.classList.add('show'); });
+
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) { overlay.remove(); }
+  });
+  overlay.querySelector('.btn-modal-close').addEventListener('click', function() {
+    overlay.remove();
+  });
+
+  function collectConfig() {
+    return {
+      apiKey: document.getElementById('fb_apiKey').value.trim(),
+      authDomain: document.getElementById('fb_authDomain').value.trim(),
+      databaseURL: document.getElementById('fb_databaseURL').value.trim(),
+      projectId: document.getElementById('fb_projectId').value.trim(),
+      storageBucket: document.getElementById('fb_storageBucket').value.trim(),
+      messagingSenderId: document.getElementById('fb_messagingSenderId').value.trim(),
+      appId: document.getElementById('fb_appId').value.trim()
+    };
+  }
+
+  document.getElementById('fbSaveBtn').addEventListener('click', function() {
+    var config = collectConfig();
+    if (!config.databaseURL) {
+      document.getElementById('fbStatusMsg').textContent = 'databaseURL 是必填项';
+      document.getElementById('fbStatusMsg').style.color = '#E63946';
+      return;
+    }
+    localStorage.setItem('aiyoushe_firebase_config', JSON.stringify(config));
+    CloudSync.setConfig(config);
+    document.getElementById('fbStatusMsg').textContent = '配置已保存到本地存储，刷新页面后生效';
+    document.getElementById('fbStatusMsg').style.color = '#52c41a';
+  });
+
+  document.getElementById('fbTestBtn').addEventListener('click', function() {
+    var config = collectConfig();
+    if (!config.databaseURL) {
+      document.getElementById('fbStatusMsg').textContent = 'databaseURL 是必填项';
+      document.getElementById('fbStatusMsg').style.color = '#E63946';
+      return;
+    }
+    document.getElementById('fbStatusMsg').textContent = '正在测试连接...';
+    document.getElementById('fbStatusMsg').style.color = '#1890ff';
+    CloudSync.setConfig(config);
+    // Reset to allow re-init
+    CloudSync.init(function(ok) {
+      if (ok) {
+        document.getElementById('fbStatusMsg').textContent = '连接成功！Firebase 已就绪';
+        document.getElementById('fbStatusMsg').style.color = '#52c41a';
+      } else {
+        document.getElementById('fbStatusMsg').textContent = '连接失败，请检查配置';
+        document.getElementById('fbStatusMsg').style.color = '#E63946';
+      }
+    });
+  });
+
+  document.getElementById('fbSyncNowBtn').addEventListener('click', function() {
+    if (CloudSync.isConnected()) {
+      document.getElementById('fbStatusMsg').textContent = '正在同步数据到 Firebase...';
+      document.getElementById('fbStatusMsg').style.color = '#1890ff';
+      syncDataToStorage();
+      document.getElementById('fbStatusMsg').textContent = '同步完成';
+      document.getElementById('fbStatusMsg').style.color = '#52c41a';
+    } else {
+      document.getElementById('fbStatusMsg').textContent = '请先保存配置并测试连接';
+      document.getElementById('fbStatusMsg').style.color = '#E63946';
+    }
+  });
+});
 
 // Single send message button binding
 document.getElementById('btnSendMsg').addEventListener('click', function() {
@@ -12689,6 +13074,34 @@ function syncDataToStorage() {
       localStorage.setItem('aiyoushe_about_contact_data', JSON.stringify(aboutContactData));
     }
 
+    // Cloud sync to Firebase
+    if (CloudSync.isConfigured()) {
+      try {
+        CloudSync.saveValueObj('articles', JSON.parse(localStorage.getItem('aiyoushe_articles') || '[]'));
+        CloudSync.saveValueObj('resources', JSON.parse(localStorage.getItem('aiyoushe_resources') || '[]'));
+        CloudSync.saveValueObj('albums', JSON.parse(localStorage.getItem('aiyoushe_albums') || '[]'));
+        CloudSync.saveValueObj('announcements', JSON.parse(localStorage.getItem('aiyoushe_announcements') || '[]'));
+        CloudSync.saveValueObj('cats', JSON.parse(localStorage.getItem('aiyoushe_cats') || '[]'));
+        CloudSync.saveValueObj('tags', JSON.parse(localStorage.getItem('aiyoushe_tags') || '[]'));
+        CloudSync.saveValueObj('featcats', JSON.parse(localStorage.getItem('aiyoushe_featcats') || '[]'));
+        CloudSync.saveValueObj('carousel', JSON.parse(localStorage.getItem('aiyoushe_carousel') || '[]'));
+        CloudSync.saveValueObj('messages', JSON.parse(localStorage.getItem('aiyoushe_messages') || '[]'));
+        
+        // Also sync simple values
+        var stringKeys = ['contact_html', 'pricing_html', 'benefits_html', 'profile_data', 'vip_banner_data', 'about_contact_data', 'story_data', 'value_data', 'faq_data'];
+        stringKeys.forEach(function(key) {
+          var val = localStorage.getItem('aiyoushe_' + key);
+          if (val) {
+            try {
+              CloudSync.saveValue(key, JSON.parse(val));
+            } catch(e) {
+              CloudSync.saveValue(key, val);
+            }
+          }
+        });
+      } catch(e) {}
+    }
+
   } catch(e) {
     // localStorage full or unavailable, silently ignore
   }
@@ -12707,6 +13120,11 @@ function exportAllData() {
       data._indexeddb_images = imgData;
     }
     data._backup_note = 'This backup contains all editable data. To fully restore your site, you also need the index.html file.';
+    // Include Firebase config in backup
+    var firebaseConfigStr = localStorage.getItem('aiyoushe_firebase_config');
+    if (firebaseConfigStr) {
+      data.aiyoushe_firebase_config = firebaseConfigStr;
+    }
     var jsonStr = JSON.stringify(data);
     var blob = new Blob([jsonStr], { type: 'application/json' });
     var url = URL.createObjectURL(blob);
@@ -12737,6 +13155,10 @@ function importAllData(jsonString) {
       Object.keys(imgs).forEach(function(k) {
         ImageStore.save(k, imgs[k]);
       });
+    }
+    // Restore Firebase config if present
+    if (data.aiyoushe_firebase_config) {
+      localStorage.setItem('aiyoushe_firebase_config', data.aiyoushe_firebase_config);
     }
     if (count > 0) {
       // Reload data from localStorage into memory variables
