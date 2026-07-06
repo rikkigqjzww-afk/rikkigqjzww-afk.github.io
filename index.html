@@ -9686,7 +9686,10 @@ function renderNewsList() {
               '<div class="form-item"><label>所属分类 <button type="button" class="admin-edit-btn btn-manage-cats" style="margin-left:6px;font-size:12px;">管理分类</button></label><div class="pill-group" id="editNewsCatPills">' + catPillsHtml + '</div></div>' +
               '<div class="form-item"><label>资讯标签 <button type="button" class="admin-edit-btn btn-manage-tags" style="margin-left:6px;font-size:12px;">管理标签</button></label><div class="pill-group multi" id="editNewsTagPills">' + tagPillsHtml + '</div></div>' +
               '<div class="form-item"><label>加入精选分类</label><div class="pill-group multi" id="editNewsFeaturedCatPills">' + featPillsHtml + '</div></div>' +
-              '<div class="form-item"><label class="checkbox-label"><input type="checkbox" id="editNewsFeatured"' + (isFeatured ? ' checked' : '') + '> 精选文章</label></div>';
+              '<div class="form-item"><label class="checkbox-label"><input type="checkbox" id="editNewsFeatured"' + (isFeatured ? ' checked' : '') + '> 精选文章</label></div>' +
+              '<div class="form-item"><label>发布日期</label><input type="date" id="editNewsDate" value="' + (a.date || '') + '"></div>' +
+              '<div class="form-item"><label>阅读量</label><input type="number" id="editNewsViews" value="' + (a.views || 0) + '" min="0"></div>' +
+              '<div class="form-item"><label>点赞量</label><input type="number" id="editNewsLikes" value="' + (a.likes || 0) + '" min="0"></div>';
             showModal('编辑文章', formHtml,
               function(overlay) {
                 var newTitle = overlay.querySelector('#editNewsTitle').value;
@@ -9708,6 +9711,12 @@ function renderNewsList() {
                 a.articleCat = newArticleCat;
                 a.infoTags = newInfoTags;
                 a.featuredCat = newFeaturedCats;
+                var editDate = overlay.querySelector('#editNewsDate');
+                if (editDate) a.date = editDate.value || a.date;
+                var editViews = overlay.querySelector('#editNewsViews');
+                if (editViews) a.views = parseInt(editViews.value) || 0;
+                var editLikes = overlay.querySelector('#editNewsLikes');
+                if (editLikes) a.likes = parseInt(editLikes.value) || 0;
                 var fileInput = overlay.querySelector('#editNewsImg');
                 if (fileInput.files && fileInput.files[0]) {
                   fileToBase64WithCrop(fileInput.files[0], function(base64) {
@@ -11077,7 +11086,7 @@ function switchPhoto(idx) {
     // ============================
 function showQrModal() {
       var overlay = document.createElement('div');
-      overlay.className = 'modal-overlay';
+      overlay.className = 'modal-overlay show';
       overlay.innerHTML = '<div class="modal-card">' +
         '<div class="qr-modal-content">' +
           '<h3>扫码联系客服购买</h3>' +
@@ -11092,21 +11101,39 @@ function showQrModal() {
         '</div>' +
       '</div>';
       document.body.appendChild(overlay);
-      requestAnimationFrame(function(){ overlay.classList.add('show'); });
+
+      // Direct close function - no animation dependency
+      function closeQrModal() {
+        overlay.classList.remove('show');
+        setTimeout(function() {
+          if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        }, 250);
+      }
 
       // Click overlay background to close
       overlay.addEventListener('click', function(e) {
-        if (e.target === overlay) { closeModal(overlay); }
+        if (e.target === overlay) closeQrModal();
       });
 
-      // Close button - use direct onclick to avoid event delegation issues
+      // Close button
       var closeBtn = document.getElementById('btnCloseQrModal');
       if (closeBtn) {
-        closeBtn.onclick = function(e) {
+        closeBtn.addEventListener('click', function(e) {
+          e.preventDefault();
           e.stopPropagation();
-          closeModal(overlay);
-        };
+          e.stopImmediatePropagation();
+          closeQrModal();
+        });
       }
+
+      // Also close on ESC key
+      function onEsc(e) {
+        if (e.key === 'Escape' || e.keyCode === 27) {
+          closeQrModal();
+          document.removeEventListener('keydown', onEsc);
+        }
+      }
+      document.addEventListener('keydown', onEsc);
 
       // Load saved QR code from localStorage
       var savedQr = localStorage.getItem('aiyoushe_qr_code');
@@ -11114,17 +11141,16 @@ function showQrModal() {
         document.getElementById('qrCodeArea').innerHTML = '<img src="' + savedQr + '" alt="客服二维码">';
       }
 
-      // Admin mode: show upload button with a persistent hidden file input
+      // Admin mode: show upload button
       if (document.body.classList.contains('admin-mode')) {
-        // Create a persistent hidden file input for QR upload
         var qrFileInput = document.createElement('input');
         qrFileInput.type = 'file';
         qrFileInput.accept = 'image/*';
-        qrFileInput.style.display = 'none';
+        qrFileInput.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
         qrFileInput.id = 'qrFileInputHidden';
         document.body.appendChild(qrFileInput);
 
-        qrFileInput.onchange = function() {
+        qrFileInput.addEventListener('change', function() {
           if (this.files && this.files[0]) {
             fileToBase64(this.files[0], function(base64) {
               var area = document.getElementById('qrCodeArea');
@@ -11136,17 +11162,19 @@ function showQrModal() {
             });
           }
           this.value = '';
-        };
+        });
 
         var uploadDiv = document.createElement('div');
         uploadDiv.style.cssText = 'margin-top:12px;text-align:center;';
         var uploadBtn = document.createElement('button');
         uploadBtn.className = 'admin-edit-btn';
         uploadBtn.textContent = '上传二维码图片';
-        uploadBtn.onclick = function(e) {
+        uploadBtn.addEventListener('click', function(e) {
+          e.preventDefault();
           e.stopPropagation();
+          e.stopImmediatePropagation();
           qrFileInput.click();
-        };
+        });
         uploadDiv.appendChild(uploadBtn);
         overlay.querySelector('.qr-modal-content').appendChild(uploadDiv);
       }
@@ -12390,20 +12418,25 @@ function bindArticleDetailEditBtns() {
       '<div class="form-item"><label>封面图片</label><input type="file" id="editArticleImg" accept="image/*"></div>' +
       '<div class="form-item"><label>文章内容</label><textarea id="editArticleContent" rows="8">' + a.content.replace(/<\/textarea>/g, '&lt;/textarea&gt;') + '</textarea></div>' +
       '<div class="form-item"><label>标签</label><input type="text" id="editArticleTags" value="' + a.tags.join(',') + '"></div>' +
-      '<div class="form-item"><label>阅读量</label><input type="text" id="editArticleReads" value="' + a.reads + '"></div>' +
+      '<div class="form-item"><label>阅读量</label><input type="number" id="editArticleReads" value="' + (a.views || a.reads || 0) + '" min="0"></div>' +
+      '<div class="form-item"><label>点赞量</label><input type="number" id="editArticleLikes" value="' + (a.likes || 0) + '" min="0"></div>' +
       '<div class="form-item"><label>日期</label><input type="date" id="editArticleDate" value="' + a.date + '"></div>';
     showModal('编辑文章', formHtml,
       function(overlay) {
         var newTitle = overlay.querySelector('#editArticleTitle').value;
         var newContent = overlay.querySelector('#editArticleContent').value;
         var newTags = overlay.querySelector('#editArticleTags').value.split(',').map(function(t){ return t.trim(); }).filter(function(t){ return t; });
-        var newReads = overlay.querySelector('#editArticleReads').value;
+        var newReads = parseInt(overlay.querySelector('#editArticleReads').value) || 0;
         var newDate = overlay.querySelector('#editArticleDate').value;
+        var editLikesEl = overlay.querySelector('#editArticleLikes');
+        var newLikes = editLikesEl ? parseInt(editLikesEl.value) || 0 : (a.likes || 0);
         if (!newTitle) { showToast('请填写文章标题'); return false; }
         a.title = newTitle;
         a.content = newContent;
         a.tags = newTags.length ? newTags : a.tags;
+        a.views = newReads;
         a.reads = newReads;
+        a.likes = newLikes;
         a.date = newDate;
         var fileInput = overlay.querySelector('#editArticleImg');
         if (fileInput.files && fileInput.files[0]) {
